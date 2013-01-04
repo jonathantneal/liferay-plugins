@@ -20,6 +20,7 @@ package com.liferay.so.hook.action;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.portlet.DynamicActionRequest;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.BaseStrutsPortletAction;
 import com.liferay.portal.kernel.struts.StrutsPortletAction;
@@ -40,9 +41,9 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.so.model.ProjectsEntry;
 import com.liferay.so.service.ProjectsEntryLocalServiceUtil;
-import com.liferay.so.util.DynamicActionRequest;
 import com.liferay.so.util.LayoutSetPrototypeUtil;
 import com.liferay.so.util.RoleConstants;
+import com.liferay.so.util.SocialOfficeConstants;
 
 import java.util.HashSet;
 import java.util.List;
@@ -227,7 +228,7 @@ public class EditUserAction extends BaseStrutsPortletAction {
 
 		for (ProjectsEntry projectsEntry : projectsEntries) {
 			if (!projectsEntryIds.contains(
-				projectsEntry.getProjectsEntryId())) {
+					projectsEntry.getProjectsEntryId())) {
 
 				ProjectsEntryLocalServiceUtil.deleteProjectsEntry(
 					projectsEntry.getProjectsEntryId());
@@ -270,7 +271,9 @@ public class EditUserAction extends BaseStrutsPortletAction {
 
 		if (newSocialOfficeUser && !roles.contains(role)) {
 			LayoutSetPrototype publicLayoutSetPrototype =
-				LayoutSetPrototypeUtil.fetchLayoutSetPrototype(user, false);
+				LayoutSetPrototypeUtil.fetchLayoutSetPrototype(
+					user.getCompanyId(),
+					SocialOfficeConstants.LAYOUT_SET_PROTOTYPE_KEY_USER_PUBLIC);
 
 			if (publicLayoutSetPrototype != null) {
 				dynamicActionRequest.setParameter(
@@ -283,7 +286,10 @@ public class EditUserAction extends BaseStrutsPortletAction {
 			}
 
 			LayoutSetPrototype privateLayoutSetPrototype =
-				LayoutSetPrototypeUtil.fetchLayoutSetPrototype(user, true);
+				LayoutSetPrototypeUtil.fetchLayoutSetPrototype(
+					user.getCompanyId(),
+					SocialOfficeConstants.
+						LAYOUT_SET_PROTOTYPE_KEY_USER_PRIVATE);
 
 			if (privateLayoutSetPrototype != null) {
 				dynamicActionRequest.setParameter(

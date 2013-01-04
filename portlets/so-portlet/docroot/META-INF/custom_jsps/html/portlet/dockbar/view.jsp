@@ -19,8 +19,23 @@
 
 <%@ include file="/html/portlet/dockbar/init.jsp" %>
 
+<%@ page import="com.liferay.portal.NoSuchRoleException" %>
+
+<%
+boolean socialOfficeUser = false;
+
+try {
+	socialOfficeUser = UserLocalServiceUtil.hasRoleUser(themeDisplay.getCompanyId(), "Social Office User", themeDisplay.getUserId(), true);
+}
+catch (NoSuchRoleException nsre) {
+
+	// This exception should never be thrown except while SO is being uninstalled
+
+}
+%>
+
 <c:choose>
-	<c:when test='<%= !UserLocalServiceUtil.hasRoleUser(themeDisplay.getCompanyId(), "Social Office User", themeDisplay.getUserId(), true) %>'>
+	<c:when test="<%= !socialOfficeUser %>">
 		<liferay-util:include page="/html/portlet/dockbar/view.portal.jsp" />
 	</c:when>
 	<c:otherwise>
@@ -29,6 +44,27 @@
 		</liferay-util:buffer>
 
 		<%
+		if (layout != null) {
+			Group group = layout.getGroup();
+
+			if (group.isControlPanel() && (themeDisplay.getRefererPlid() > 0)) {
+				Layout refererLayout = LayoutLocalServiceUtil.fetchLayout(themeDisplay.getRefererPlid());
+
+				if (refererLayout != null) {
+					Group refererGroup = refererLayout.getGroup();
+
+					if (refererGroup.isUser() && (refererGroup.getClassPK() == user.getUserId())) {
+						if (refererLayout.isPublicLayout()) {
+							html = html.replaceFirst(LanguageUtil.get(pageContext, "my-public-pages"), LanguageUtil.get(pageContext, "profile"));
+						}
+						else {
+							html = html.replaceFirst(LanguageUtil.get(pageContext, "my-private-pages"), LanguageUtil.get(pageContext, "dashboard"));
+						}
+					}
+				}
+			}
+		}
+
 		int x = html.indexOf("<li class=\"user-avatar \" id=\"_145_userAvatar\">");
 		int y = html.indexOf("<div class=\"dockbar-messages\"");
 		%>
@@ -82,7 +118,12 @@
 						<div class="aui-menu-content" id="<portlet:namespace />userMenuContent">
 							<ul>
 								<li class="aui-menu-item first profile">
-									<a href="<%= user.getDisplayURL(themeDisplay) %>">
+
+									<%
+									portletURL.setParameter("privateLayout", Boolean.FALSE.toString());
+									%>
+
+									<a href="<%= portletURL %>">
 										<liferay-ui:icon
 											message="my-profile"
 											src='/html/icons/users_admin.png'
@@ -109,7 +150,7 @@
 									<a href="<%= themeDisplay.getURLSignOut().toString() %>">
 										<liferay-ui:icon
 											message="sign-out"
-											src='<%= themeDisplay.getPathThemeImages() + "/common/sign_out.png" %>'
+											src='<%= themeDisplay.getPathThemeImages() + "/dock/sign_out.png" %>'
 										/>
 
 										<liferay-ui:message key="sign-out" />
@@ -157,3 +198,5 @@
 		</c:choose>
 	</c:otherwise>
 </c:choose>
+
+<liferay-util:include page="/html/portlet/dockbar/license_warning.jsp" />

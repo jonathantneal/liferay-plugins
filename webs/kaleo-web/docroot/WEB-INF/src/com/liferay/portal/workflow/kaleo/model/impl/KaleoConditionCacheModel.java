@@ -19,7 +19,10 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.workflow.kaleo.model.KaleoCondition;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,10 +34,10 @@ import java.util.Date;
  * @generated
  */
 public class KaleoConditionCacheModel implements CacheModel<KaleoCondition>,
-	Serializable {
+	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("{kaleoConditionId=");
 		sb.append(kaleoConditionId);
@@ -58,6 +61,8 @@ public class KaleoConditionCacheModel implements CacheModel<KaleoCondition>,
 		sb.append(script);
 		sb.append(", scriptLanguage=");
 		sb.append(scriptLanguage);
+		sb.append(", scriptRequiredContexts=");
+		sb.append(scriptRequiredContexts);
 		sb.append("}");
 
 		return sb.toString();
@@ -109,9 +114,72 @@ public class KaleoConditionCacheModel implements CacheModel<KaleoCondition>,
 			kaleoConditionImpl.setScriptLanguage(scriptLanguage);
 		}
 
+		if (scriptRequiredContexts == null) {
+			kaleoConditionImpl.setScriptRequiredContexts(StringPool.BLANK);
+		}
+		else {
+			kaleoConditionImpl.setScriptRequiredContexts(scriptRequiredContexts);
+		}
+
 		kaleoConditionImpl.resetOriginalValues();
 
 		return kaleoConditionImpl;
+	}
+
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		kaleoConditionId = objectInput.readLong();
+		groupId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		kaleoDefinitionId = objectInput.readLong();
+		kaleoNodeId = objectInput.readLong();
+		script = objectInput.readUTF();
+		scriptLanguage = objectInput.readUTF();
+		scriptRequiredContexts = objectInput.readUTF();
+	}
+
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(kaleoConditionId);
+		objectOutput.writeLong(groupId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+		objectOutput.writeLong(kaleoDefinitionId);
+		objectOutput.writeLong(kaleoNodeId);
+
+		if (script == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(script);
+		}
+
+		if (scriptLanguage == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(scriptLanguage);
+		}
+
+		if (scriptRequiredContexts == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(scriptRequiredContexts);
+		}
 	}
 
 	public long kaleoConditionId;
@@ -125,4 +193,5 @@ public class KaleoConditionCacheModel implements CacheModel<KaleoCondition>,
 	public long kaleoNodeId;
 	public String script;
 	public String scriptLanguage;
+	public String scriptRequiredContexts;
 }

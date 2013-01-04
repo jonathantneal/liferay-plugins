@@ -30,10 +30,10 @@ import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.service.BaseServiceImpl;
 import com.liferay.portal.service.ResourceLocalService;
 import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.service.UserService;
-import com.liferay.portal.service.base.PrincipalBean;
 import com.liferay.portal.service.persistence.UserPersistence;
 
 import javax.sql.DataSource;
@@ -50,7 +50,7 @@ import javax.sql.DataSource;
  * @see com.liferay.opensocial.service.GadgetServiceUtil
  * @generated
  */
-public abstract class GadgetServiceBaseImpl extends PrincipalBean
+public abstract class GadgetServiceBaseImpl extends BaseServiceImpl
 	implements GadgetService, IdentifiableBean {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -280,6 +280,9 @@ public abstract class GadgetServiceBaseImpl extends PrincipalBean
 	}
 
 	public void afterPropertiesSet() {
+		Class<?> clazz = getClass();
+
+		_classLoader = clazz.getClassLoader();
 	}
 
 	public void destroy() {
@@ -303,10 +306,24 @@ public abstract class GadgetServiceBaseImpl extends PrincipalBean
 		_beanIdentifier = beanIdentifier;
 	}
 
-	protected ClassLoader getClassLoader() {
-		Class<?> clazz = getClass();
+	public Object invokeMethod(String name, String[] parameterTypes,
+		Object[] arguments) throws Throwable {
+		Thread currentThread = Thread.currentThread();
 
-		return clazz.getClassLoader();
+		ClassLoader contextClassLoader = currentThread.getContextClassLoader();
+
+		if (contextClassLoader != _classLoader) {
+			currentThread.setContextClassLoader(_classLoader);
+		}
+
+		try {
+			return _clpInvoker.invokeMethod(name, parameterTypes, arguments);
+		}
+		finally {
+			if (contextClassLoader != _classLoader) {
+				currentThread.setContextClassLoader(contextClassLoader);
+			}
+		}
 	}
 
 	protected Class<?> getModelClass() {
@@ -361,4 +378,6 @@ public abstract class GadgetServiceBaseImpl extends PrincipalBean
 	@BeanReference(type = UserPersistence.class)
 	protected UserPersistence userPersistence;
 	private String _beanIdentifier;
+	private ClassLoader _classLoader;
+	private GadgetServiceClpInvoker _clpInvoker = new GadgetServiceClpInvoker();
 }

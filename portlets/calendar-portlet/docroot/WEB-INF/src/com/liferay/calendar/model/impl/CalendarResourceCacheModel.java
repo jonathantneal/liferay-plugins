@@ -20,7 +20,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -32,10 +35,10 @@ import java.util.Date;
  * @generated
  */
 public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
-	Serializable {
+	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -53,12 +56,16 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", resourceBlockId=");
+		sb.append(resourceBlockId);
 		sb.append(", classNameId=");
 		sb.append(classNameId);
 		sb.append(", classPK=");
 		sb.append(classPK);
 		sb.append(", classUuid=");
 		sb.append(classUuid);
+		sb.append(", code=");
+		sb.append(code);
 		sb.append(", name=");
 		sb.append(name);
 		sb.append(", description=");
@@ -106,6 +113,7 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 			calendarResourceImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
+		calendarResourceImpl.setResourceBlockId(resourceBlockId);
 		calendarResourceImpl.setClassNameId(classNameId);
 		calendarResourceImpl.setClassPK(classPK);
 
@@ -114,6 +122,13 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 		}
 		else {
 			calendarResourceImpl.setClassUuid(classUuid);
+		}
+
+		if (code == null) {
+			calendarResourceImpl.setCode(StringPool.BLANK);
+		}
+		else {
+			calendarResourceImpl.setCode(code);
 		}
 
 		if (name == null) {
@@ -137,6 +152,83 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 		return calendarResourceImpl;
 	}
 
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		uuid = objectInput.readUTF();
+		calendarResourceId = objectInput.readLong();
+		groupId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		resourceBlockId = objectInput.readLong();
+		classNameId = objectInput.readLong();
+		classPK = objectInput.readLong();
+		classUuid = objectInput.readUTF();
+		code = objectInput.readUTF();
+		name = objectInput.readUTF();
+		description = objectInput.readUTF();
+		active = objectInput.readBoolean();
+	}
+
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		if (uuid == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(uuid);
+		}
+
+		objectOutput.writeLong(calendarResourceId);
+		objectOutput.writeLong(groupId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+		objectOutput.writeLong(resourceBlockId);
+		objectOutput.writeLong(classNameId);
+		objectOutput.writeLong(classPK);
+
+		if (classUuid == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(classUuid);
+		}
+
+		if (code == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(code);
+		}
+
+		if (name == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(name);
+		}
+
+		if (description == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(description);
+		}
+
+		objectOutput.writeBoolean(active);
+	}
+
 	public String uuid;
 	public long calendarResourceId;
 	public long groupId;
@@ -145,9 +237,11 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public long resourceBlockId;
 	public long classNameId;
 	public long classPK;
 	public String classUuid;
+	public String code;
 	public String name;
 	public String description;
 	public boolean active;

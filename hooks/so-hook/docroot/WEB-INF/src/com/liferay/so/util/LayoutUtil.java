@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
@@ -39,12 +38,12 @@ import com.liferay.portal.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.permission.PortletPermissionUtil;
-import com.liferay.portal.util.PortletKeys;
 import com.liferay.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.util.portlet.PortletProps;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.portlet.PortletPreferences;
 
@@ -52,6 +51,29 @@ import javax.portlet.PortletPreferences;
  * @author Jonathan Lee
  */
 public class LayoutUtil {
+
+	public static Layout addLayout(
+			Group group, boolean privateLayout, long parentLayoutId,
+			Map<Locale, String> nameMap, String friendlyURL,
+			String layoutTemplateId)
+		throws Exception {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		Layout layout = LayoutLocalServiceUtil.addLayout(
+			group.getCreatorUserId(), group.getGroupId(), privateLayout,
+			parentLayoutId, nameMap, null, null, null, null,
+			LayoutConstants.TYPE_PORTLET, false, friendlyURL, serviceContext);
+
+		LayoutTypePortlet layoutTypePortlet =
+			(LayoutTypePortlet)layout.getLayoutType();
+
+		layoutTypePortlet.setLayoutTemplateId(0, layoutTemplateId, false);
+
+		return LayoutLocalServiceUtil.updateLayout(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			layout.getTypeSettings());
+	}
 
 	public static Layout addLayout(
 			Group group, boolean privateLayout, long parentLayoutId,
@@ -98,13 +120,7 @@ public class LayoutUtil {
 				portletIds = PortletProps.getArray(keyPrefix + column, filter);
 			}
 
-			String portlets = StringPool.BLANK;
-
-			for (String portletId : portletIds) {
-				portlets = StringUtil.add(portlets, portletId);
-			}
-
-			layoutTypePortlet.setPortletIds(column, portlets);
+			layoutTypePortlet.addPortletIds(0, portletIds, column, false);
 		}
 
 		LayoutLocalServiceUtil.updateLayout(
@@ -122,22 +138,32 @@ public class LayoutUtil {
 			else if (portletId.startsWith("1_WAR_wysiwygportlet")) {
 				updatePortletTitle(layout, portletId, "Welcome");
 			}
-			else if (portletId.startsWith("101")) {
-				updatePortletTitle(layout, portletId, "Related Content");
-			}
-			else if (portletId.startsWith("115")) {
-				updatePortletTitle(layout, portletId, "Recent Blogs");
-			}
 			else if (portletId.contains("_WAR_contactsportlet")) {
 				configureProfile(layout, portletId);
 				removePortletBorder(layout, portletId);
 			}
-			else if (portletId.contains("_WAR_microblogsportlet") ||
+			else if (portletId.startsWith(PortletKeys.ASSET_PUBLISHER)) {
+				configureAssetPublisher(layout);
+				updatePortletTitle(layout, portletId, "Related Content");
+			}
+			else if (portletId.startsWith(PortletKeys.BLOGS_AGGREGATOR)) {
+				configureBlogsAggregator(layout);
+				updatePortletTitle(layout, portletId, "Recent Blogs");
+			}
+			else if (portletId.startsWith(PortletKeys.BREADCRUMB)) {
+				removePortletBorder(layout, portletId);
+			}
+			else if (portletId.startsWith(PortletKeys.MESSAGE_BOARDS)) {
+				configureMessageBoards(layout);
+				removePortletBorder(layout, portletId);
+			}
+			else if (portletId.equals(PortletKeys.CALENDAR) ||
+					 portletId.equals(PortletKeys.DOCUMENT_LIBRARY) ||
+					 portletId.equals(PortletKeys.BLOGS) ||
+					 portletId.equals(PortletKeys.WIKI) ||
+					 portletId.contains("_WAR_microblogsportlet") ||
 					 portletId.equals("1_WAR_privatemessagingportlet") ||
-					 portletId.contains("1_WAR_tasksportlet") ||
-					 portletId.equals("8") || portletId.equals("19") ||
-					 portletId.equals("20") || portletId.equals("29") ||
-					 portletId.equals("33") || portletId.equals("36")) {
+					 portletId.contains("1_WAR_tasksportlet")) {
 
 				removePortletBorder(layout, portletId);
 			}
@@ -145,7 +171,7 @@ public class LayoutUtil {
 	}
 
 	public static void addResources(Layout layout, String portletId)
-		throws Exception{
+		throws Exception {
 
 		String rootPortletId = PortletConstants.getRootPortletId(portletId);
 
@@ -164,6 +190,19 @@ public class LayoutUtil {
 
 		portletSetup.setValue("displayStyle", "title-list");
 		portletSetup.setValue("assetLinkBehaviour", "viewInPortlet");
+
+		portletSetup.store();
+	}
+
+	public static void configureBlogsAggregator(Layout layout)
+		throws Exception {
+
+		PortletPreferences portletSetup =
+			PortletPreferencesFactoryUtil.getLayoutPortletSetup(
+				layout, PortletKeys.BLOGS_AGGREGATOR);
+
+		portletSetup.setValue("enableRssSubscription", "false");
+		portletSetup.setValue("selectionMethod", "scope");
 
 		portletSetup.store();
 	}

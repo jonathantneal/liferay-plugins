@@ -69,7 +69,7 @@ public class WSRPProducerLocalServiceImpl
 		wsrpProducer.setVersion(version);
 		wsrpProducer.setPortletIds(portletIds);
 
-		wsrpProducerPersistence.update(wsrpProducer, false);
+		wsrpProducerPersistence.update(wsrpProducer);
 
 		return wsrpProducer;
 	}
@@ -154,7 +154,7 @@ public class WSRPProducerLocalServiceImpl
 		wsrpProducer.setVersion(version);
 		wsrpProducer.setPortletIds(portletIds);
 
-		wsrpProducerPersistence.update(wsrpProducer, false);
+		wsrpProducerPersistence.update(wsrpProducer);
 
 		// Group
 
@@ -177,15 +177,15 @@ public class WSRPProducerLocalServiceImpl
 		params.put("type", type);
 
 		List<Group> groups = groupLocalService.search(
-			user.getCompanyId(), name, null, params, 0, 1);
+			user.getCompanyId(), name, params, 0, 1);
 
 		if (!groups.isEmpty()) {
 			return groups.get(0);
 		}
 
 		Group group = groupLocalService.addGroup(
-			user.getUserId(), null, 0, 0, name, null, type, null, true, true,
-			null);
+			user.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
+			0, name, null, type, null, true, true, null);
 
 		layoutLocalService.addLayout(
 			user.getUserId(), group.getGroupId(), false,

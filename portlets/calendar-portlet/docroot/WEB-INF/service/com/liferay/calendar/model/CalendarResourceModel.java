@@ -14,12 +14,14 @@
 
 package com.liferay.calendar.model;
 
+import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.AttachedModel;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.GroupedModel;
+import com.liferay.portal.model.StagedModel;
 import com.liferay.portal.service.ServiceContext;
 
 import com.liferay.portlet.expando.model.ExpandoBridge;
@@ -44,7 +46,7 @@ import java.util.Map;
  * @generated
  */
 public interface CalendarResourceModel extends AttachedModel,
-	BaseModel<CalendarResource>, GroupedModel {
+	BaseModel<CalendarResource>, GroupedModel, StagedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -195,6 +197,20 @@ public interface CalendarResourceModel extends AttachedModel,
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the resource block ID of this calendar resource.
+	 *
+	 * @return the resource block ID of this calendar resource
+	 */
+	public long getResourceBlockId();
+
+	/**
+	 * Sets the resource block ID of this calendar resource.
+	 *
+	 * @param resourceBlockId the resource block ID of this calendar resource
+	 */
+	public void setResourceBlockId(long resourceBlockId);
+
+	/**
 	 * Returns the fully qualified class name of this calendar resource.
 	 *
 	 * @return the fully qualified class name of this calendar resource
@@ -245,6 +261,21 @@ public interface CalendarResourceModel extends AttachedModel,
 	 * @param classUuid the class uuid of this calendar resource
 	 */
 	public void setClassUuid(String classUuid);
+
+	/**
+	 * Returns the code of this calendar resource.
+	 *
+	 * @return the code of this calendar resource
+	 */
+	@AutoEscape
+	public String getCode();
+
+	/**
+	 * Sets the code of this calendar resource.
+	 *
+	 * @param code the code of this calendar resource
+	 */
+	public void setCode(String code);
 
 	/**
 	 * Returns the name of this calendar resource.
@@ -485,6 +516,9 @@ public interface CalendarResourceModel extends AttachedModel,
 
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext);
 
+	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
+		throws LocaleException;
+
 	public Object clone();
 
 	public int compareTo(CalendarResource calendarResource);
@@ -494,6 +528,8 @@ public interface CalendarResourceModel extends AttachedModel,
 	public CacheModel<CalendarResource> toCacheModel();
 
 	public CalendarResource toEscapedModel();
+
+	public CalendarResource toUnescapedModel();
 
 	public String toString();
 

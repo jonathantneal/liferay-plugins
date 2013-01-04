@@ -33,6 +33,9 @@ import java.io.Serializable;
 
 import java.sql.Types;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The base model implementation for the Module service. Represents a row in the &quot;Marketplace_Module&quot; database table, with each column mapped to a property of this class.
  *
@@ -62,6 +65,8 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		};
 	public static final String TABLE_SQL_CREATE = "create table Marketplace_Module (uuid_ VARCHAR(75) null,moduleId LONG not null primary key,appId LONG,contextName VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table Marketplace_Module";
+	public static final String ORDER_BY_JPQL = " ORDER BY module.moduleId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY Marketplace_Module.moduleId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -77,6 +82,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	public static long APPID_COLUMN_BITMASK = 1L;
 	public static long CONTEXTNAME_COLUMN_BITMASK = 2L;
 	public static long UUID_COLUMN_BITMASK = 4L;
+	public static long MODULEID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.marketplace.model.Module"));
 
@@ -105,6 +111,45 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 
 	public String getModelClassName() {
 		return Module.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("uuid", getUuid());
+		attributes.put("moduleId", getModuleId());
+		attributes.put("appId", getAppId());
+		attributes.put("contextName", getContextName());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		String uuid = (String)attributes.get("uuid");
+
+		if (uuid != null) {
+			setUuid(uuid);
+		}
+
+		Long moduleId = (Long)attributes.get("moduleId");
+
+		if (moduleId != null) {
+			setModuleId(moduleId);
+		}
+
+		Long appId = (Long)attributes.get("appId");
+
+		if (appId != null) {
+			setAppId(appId);
+		}
+
+		String contextName = (String)attributes.get("contextName");
+
+		if (contextName != null) {
+			setContextName(contextName);
+		}
 	}
 
 	public String getUuid() {
@@ -184,29 +229,26 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	}
 
 	@Override
-	public Module toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Module)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-					Module.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			Module.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Module toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Module)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -356,9 +398,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	}
 
 	private static ClassLoader _classLoader = Module.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			Module.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { Module.class };
 	private String _uuid;
 	private String _originalUuid;
 	private long _moduleId;
@@ -367,7 +407,6 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	private boolean _setOriginalAppId;
 	private String _contextName;
 	private String _originalContextName;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private Module _escapedModelProxy;
+	private Module _escapedModel;
 }

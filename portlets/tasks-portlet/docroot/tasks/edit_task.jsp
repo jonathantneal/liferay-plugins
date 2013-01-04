@@ -2,15 +2,18 @@
 /**
  * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This file is part of Liferay Social Office. Liferay Social Office is free
+ * software: you can redistribute it and/or modify it under the terms of the GNU
+ * Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * Liferay Social Office is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Liferay Social Office. If not, see http://www.gnu.org/licenses/agpl-3.0.html.
  */
 --%>
 
@@ -37,11 +40,10 @@ if ((tasksEntry != null) && (tasksEntry.getDueDate() != null)) {
 }
 %>
 
-<portlet:actionURL name="updateTasksEntry" var="updateTasksEntryURL">
-	<portlet:param name="mvcPath" value="/tasks/edit_task.jsp" />
-</portlet:actionURL>
+<portlet:actionURL name="updateTasksEntry" var="updateTasksEntryURL" />
 
 <aui:form action="<%= updateTasksEntryURL %>" method="post" name="fm1" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveForm();" %>'>
+	<aui:input name="mvcPath" type="hidden" value="/tasks/edit_task.jsp" />
 	<aui:input name="tasksEntryId" type="hidden" value="<%= tasksEntryId %>" />
 	<aui:input name="userId" type="hidden" value="<%= user.getUserId() %>" />
 	<aui:input name="resolverUserId" type="hidden" value="<%= user.getUserId() %>" />
@@ -66,7 +68,7 @@ if ((tasksEntry != null) && (tasksEntry.getDueDate() != null)) {
 					<aui:option label="<%= HtmlUtil.escape(user.getFullName()) %>" selected="<%= (assigneeUserId == user.getUserId()) %>" value="<%= user.getUserId() %>" />
 
 					<c:if test="<%= (tasksEntry != null) && (assigneeUserId > 0) && (assigneeUserId != user.getUserId()) %>">
-						<aui:option label="<%= PortalUtil.getUserName(assigneeUserId, tasksEntry.getAssigneeFullName()) %>" selected="<%= true %>" value="<%= assigneeUserId %>" />
+						<aui:option label="<%= PortalUtil.getUserName(assigneeUserId, tasksEntry.getAssigneeFullName()) %>" selected="<%= true %>" />
 					</c:if>
 
 					<optgroup label="<liferay-ui:message key="members" />">
@@ -125,7 +127,7 @@ if ((tasksEntry != null) && (tasksEntry.getDueDate() != null)) {
 				for (int curStatus : TasksEntryConstants.STATUSES) {
 				%>
 
-					<aui:option label="<%= TasksEntryConstants.getStatusLabel(curStatus) %>" selected="<%= tasksEntry.getStatus() == curStatus %>" />
+					<aui:option label="<%= TasksEntryConstants.getStatusLabel(curStatus) %>" selected="<%= tasksEntry.getStatus() == curStatus %>" value="<%= curStatus %>" />
 
 				<%
 				}

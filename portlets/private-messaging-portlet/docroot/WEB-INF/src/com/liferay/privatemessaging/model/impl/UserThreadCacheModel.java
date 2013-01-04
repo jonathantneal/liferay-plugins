@@ -15,11 +15,15 @@
 package com.liferay.privatemessaging.model.impl;
 
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 
 import com.liferay.privatemessaging.model.UserThread;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,10 +35,10 @@ import java.util.Date;
  * @generated
  */
 public class UserThreadCacheModel implements CacheModel<UserThread>,
-	Serializable {
+	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{userThreadId=");
 		sb.append(userThreadId);
@@ -42,6 +46,8 @@ public class UserThreadCacheModel implements CacheModel<UserThread>,
 		sb.append(companyId);
 		sb.append(", userId=");
 		sb.append(userId);
+		sb.append(", userName=");
+		sb.append(userName);
 		sb.append(", createDate=");
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
@@ -65,6 +71,13 @@ public class UserThreadCacheModel implements CacheModel<UserThread>,
 		userThreadImpl.setUserThreadId(userThreadId);
 		userThreadImpl.setCompanyId(companyId);
 		userThreadImpl.setUserId(userId);
+
+		if (userName == null) {
+			userThreadImpl.setUserName(StringPool.BLANK);
+		}
+		else {
+			userThreadImpl.setUserName(userName);
+		}
 
 		if (createDate == Long.MIN_VALUE) {
 			userThreadImpl.setCreateDate(null);
@@ -90,9 +103,44 @@ public class UserThreadCacheModel implements CacheModel<UserThread>,
 		return userThreadImpl;
 	}
 
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		userThreadId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		mbThreadId = objectInput.readLong();
+		topMBMessageId = objectInput.readLong();
+		read = objectInput.readBoolean();
+		deleted = objectInput.readBoolean();
+	}
+
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(userThreadId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+		objectOutput.writeLong(mbThreadId);
+		objectOutput.writeLong(topMBMessageId);
+		objectOutput.writeBoolean(read);
+		objectOutput.writeBoolean(deleted);
+	}
+
 	public long userThreadId;
 	public long companyId;
 	public long userId;
+	public String userName;
 	public long createDate;
 	public long modifiedDate;
 	public long mbThreadId;

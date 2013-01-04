@@ -27,8 +27,7 @@ import java.util.List;
 /**
  * @author Dennis Ju
  */
-public class OAuthTokenLocalServiceImpl
-	extends OAuthTokenLocalServiceBaseImpl {
+public class OAuthTokenLocalServiceImpl extends OAuthTokenLocalServiceBaseImpl {
 
 	public OAuthToken addOAuthToken(
 			long userId, String gadgetKey, String serviceName, long moduleId,
@@ -57,7 +56,7 @@ public class OAuthTokenLocalServiceImpl
 		oAuthToken.setSessionHandle(sessionHandle);
 		oAuthToken.setExpiration(expiration);
 
-		oAuthTokenPersistence.update(oAuthToken, false);
+		oAuthTokenPersistence.update(oAuthToken);
 
 		return oAuthToken;
 	}

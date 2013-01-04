@@ -36,6 +36,8 @@ import java.io.Serializable;
 import java.sql.Types;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The base model implementation for the Asset service. Represents a row in the &quot;AMS_Asset&quot; database table, with each column mapped to a property of this class.
@@ -71,6 +73,8 @@ public class AssetModelImpl extends BaseModelImpl<Asset> implements AssetModel {
 		};
 	public static final String TABLE_SQL_CREATE = "create table AMS_Asset (assetId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,definitionId LONG,serialNumber VARCHAR(75) null,inactiveDate DATE null,active_ BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table AMS_Asset";
+	public static final String ORDER_BY_JPQL = " ORDER BY asset.assetId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY AMS_Asset.assetId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -109,6 +113,87 @@ public class AssetModelImpl extends BaseModelImpl<Asset> implements AssetModel {
 
 	public String getModelClassName() {
 		return Asset.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("assetId", getAssetId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("definitionId", getDefinitionId());
+		attributes.put("serialNumber", getSerialNumber());
+		attributes.put("inactiveDate", getInactiveDate());
+		attributes.put("active", getActive());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long assetId = (Long)attributes.get("assetId");
+
+		if (assetId != null) {
+			setAssetId(assetId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long definitionId = (Long)attributes.get("definitionId");
+
+		if (definitionId != null) {
+			setDefinitionId(definitionId);
+		}
+
+		String serialNumber = (String)attributes.get("serialNumber");
+
+		if (serialNumber != null) {
+			setSerialNumber(serialNumber);
+		}
+
+		Date inactiveDate = (Date)attributes.get("inactiveDate");
+
+		if (inactiveDate != null) {
+			setInactiveDate(inactiveDate);
+		}
+
+		Boolean active = (Boolean)attributes.get("active");
+
+		if (active != null) {
+			setActive(active);
+		}
 	}
 
 	public long getAssetId() {
@@ -214,29 +299,26 @@ public class AssetModelImpl extends BaseModelImpl<Asset> implements AssetModel {
 	}
 
 	@Override
-	public Asset toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Asset)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					Asset.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			Asset.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Asset toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Asset)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -450,9 +532,7 @@ public class AssetModelImpl extends BaseModelImpl<Asset> implements AssetModel {
 	}
 
 	private static ClassLoader _classLoader = Asset.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			Asset.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { Asset.class };
 	private long _assetId;
 	private long _companyId;
 	private long _userId;
@@ -464,6 +544,5 @@ public class AssetModelImpl extends BaseModelImpl<Asset> implements AssetModel {
 	private String _serialNumber;
 	private Date _inactiveDate;
 	private boolean _active;
-	private transient ExpandoBridge _expandoBridge;
-	private Asset _escapedModelProxy;
+	private Asset _escapedModel;
 }

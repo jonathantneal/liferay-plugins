@@ -17,26 +17,37 @@ package com.liferay.calendar.service.base;
 import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.service.CalendarBookingLocalService;
 import com.liferay.calendar.service.CalendarBookingService;
-import com.liferay.calendar.service.CalendarEventLocalService;
-import com.liferay.calendar.service.CalendarEventService;
+import com.liferay.calendar.service.CalendarLocalService;
 import com.liferay.calendar.service.CalendarResourceLocalService;
 import com.liferay.calendar.service.CalendarResourceService;
+import com.liferay.calendar.service.CalendarService;
+import com.liferay.calendar.service.persistence.CalendarBookingFinder;
 import com.liferay.calendar.service.persistence.CalendarBookingPersistence;
-import com.liferay.calendar.service.persistence.CalendarEventPersistence;
+import com.liferay.calendar.service.persistence.CalendarFinder;
+import com.liferay.calendar.service.persistence.CalendarPersistence;
+import com.liferay.calendar.service.persistence.CalendarResourceFinder;
 import com.liferay.calendar.service.persistence.CalendarResourcePersistence;
 
 import com.liferay.counter.service.CounterLocalService;
+
+import com.liferay.mail.service.MailService;
 
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.service.BaseServiceImpl;
 import com.liferay.portal.service.ResourceLocalService;
 import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.service.UserService;
-import com.liferay.portal.service.base.PrincipalBean;
 import com.liferay.portal.service.persistence.UserPersistence;
+
+import com.liferay.portlet.asset.service.AssetEntryLocalService;
+import com.liferay.portlet.asset.service.AssetEntryService;
+import com.liferay.portlet.asset.service.AssetLinkLocalService;
+import com.liferay.portlet.asset.service.persistence.AssetEntryPersistence;
+import com.liferay.portlet.asset.service.persistence.AssetLinkPersistence;
 
 import javax.sql.DataSource;
 
@@ -52,13 +63,86 @@ import javax.sql.DataSource;
  * @see com.liferay.calendar.service.CalendarBookingServiceUtil
  * @generated
  */
-public abstract class CalendarBookingServiceBaseImpl extends PrincipalBean
+public abstract class CalendarBookingServiceBaseImpl extends BaseServiceImpl
 	implements CalendarBookingService, IdentifiableBean {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never modify or reference this class directly. Always use {@link com.liferay.calendar.service.CalendarBookingServiceUtil} to access the calendar booking remote service.
 	 */
+
+	/**
+	 * Returns the calendar local service.
+	 *
+	 * @return the calendar local service
+	 */
+	public CalendarLocalService getCalendarLocalService() {
+		return calendarLocalService;
+	}
+
+	/**
+	 * Sets the calendar local service.
+	 *
+	 * @param calendarLocalService the calendar local service
+	 */
+	public void setCalendarLocalService(
+		CalendarLocalService calendarLocalService) {
+		this.calendarLocalService = calendarLocalService;
+	}
+
+	/**
+	 * Returns the calendar remote service.
+	 *
+	 * @return the calendar remote service
+	 */
+	public CalendarService getCalendarService() {
+		return calendarService;
+	}
+
+	/**
+	 * Sets the calendar remote service.
+	 *
+	 * @param calendarService the calendar remote service
+	 */
+	public void setCalendarService(CalendarService calendarService) {
+		this.calendarService = calendarService;
+	}
+
+	/**
+	 * Returns the calendar persistence.
+	 *
+	 * @return the calendar persistence
+	 */
+	public CalendarPersistence getCalendarPersistence() {
+		return calendarPersistence;
+	}
+
+	/**
+	 * Sets the calendar persistence.
+	 *
+	 * @param calendarPersistence the calendar persistence
+	 */
+	public void setCalendarPersistence(CalendarPersistence calendarPersistence) {
+		this.calendarPersistence = calendarPersistence;
+	}
+
+	/**
+	 * Returns the calendar finder.
+	 *
+	 * @return the calendar finder
+	 */
+	public CalendarFinder getCalendarFinder() {
+		return calendarFinder;
+	}
+
+	/**
+	 * Sets the calendar finder.
+	 *
+	 * @param calendarFinder the calendar finder
+	 */
+	public void setCalendarFinder(CalendarFinder calendarFinder) {
+		this.calendarFinder = calendarFinder;
+	}
 
 	/**
 	 * Returns the calendar booking local service.
@@ -118,60 +202,22 @@ public abstract class CalendarBookingServiceBaseImpl extends PrincipalBean
 	}
 
 	/**
-	 * Returns the calendar event local service.
+	 * Returns the calendar booking finder.
 	 *
-	 * @return the calendar event local service
+	 * @return the calendar booking finder
 	 */
-	public CalendarEventLocalService getCalendarEventLocalService() {
-		return calendarEventLocalService;
+	public CalendarBookingFinder getCalendarBookingFinder() {
+		return calendarBookingFinder;
 	}
 
 	/**
-	 * Sets the calendar event local service.
+	 * Sets the calendar booking finder.
 	 *
-	 * @param calendarEventLocalService the calendar event local service
+	 * @param calendarBookingFinder the calendar booking finder
 	 */
-	public void setCalendarEventLocalService(
-		CalendarEventLocalService calendarEventLocalService) {
-		this.calendarEventLocalService = calendarEventLocalService;
-	}
-
-	/**
-	 * Returns the calendar event remote service.
-	 *
-	 * @return the calendar event remote service
-	 */
-	public CalendarEventService getCalendarEventService() {
-		return calendarEventService;
-	}
-
-	/**
-	 * Sets the calendar event remote service.
-	 *
-	 * @param calendarEventService the calendar event remote service
-	 */
-	public void setCalendarEventService(
-		CalendarEventService calendarEventService) {
-		this.calendarEventService = calendarEventService;
-	}
-
-	/**
-	 * Returns the calendar event persistence.
-	 *
-	 * @return the calendar event persistence
-	 */
-	public CalendarEventPersistence getCalendarEventPersistence() {
-		return calendarEventPersistence;
-	}
-
-	/**
-	 * Sets the calendar event persistence.
-	 *
-	 * @param calendarEventPersistence the calendar event persistence
-	 */
-	public void setCalendarEventPersistence(
-		CalendarEventPersistence calendarEventPersistence) {
-		this.calendarEventPersistence = calendarEventPersistence;
+	public void setCalendarBookingFinder(
+		CalendarBookingFinder calendarBookingFinder) {
+		this.calendarBookingFinder = calendarBookingFinder;
 	}
 
 	/**
@@ -232,6 +278,25 @@ public abstract class CalendarBookingServiceBaseImpl extends PrincipalBean
 	}
 
 	/**
+	 * Returns the calendar resource finder.
+	 *
+	 * @return the calendar resource finder
+	 */
+	public CalendarResourceFinder getCalendarResourceFinder() {
+		return calendarResourceFinder;
+	}
+
+	/**
+	 * Sets the calendar resource finder.
+	 *
+	 * @param calendarResourceFinder the calendar resource finder
+	 */
+	public void setCalendarResourceFinder(
+		CalendarResourceFinder calendarResourceFinder) {
+		this.calendarResourceFinder = calendarResourceFinder;
+	}
+
+	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
@@ -247,6 +312,24 @@ public abstract class CalendarBookingServiceBaseImpl extends PrincipalBean
 	 */
 	public void setCounterLocalService(CounterLocalService counterLocalService) {
 		this.counterLocalService = counterLocalService;
+	}
+
+	/**
+	 * Returns the mail remote service.
+	 *
+	 * @return the mail remote service
+	 */
+	public MailService getMailService() {
+		return mailService;
+	}
+
+	/**
+	 * Sets the mail remote service.
+	 *
+	 * @param mailService the mail remote service
+	 */
+	public void setMailService(MailService mailService) {
+		this.mailService = mailService;
 	}
 
 	/**
@@ -322,7 +405,104 @@ public abstract class CalendarBookingServiceBaseImpl extends PrincipalBean
 		this.userPersistence = userPersistence;
 	}
 
+	/**
+	 * Returns the asset entry local service.
+	 *
+	 * @return the asset entry local service
+	 */
+	public AssetEntryLocalService getAssetEntryLocalService() {
+		return assetEntryLocalService;
+	}
+
+	/**
+	 * Sets the asset entry local service.
+	 *
+	 * @param assetEntryLocalService the asset entry local service
+	 */
+	public void setAssetEntryLocalService(
+		AssetEntryLocalService assetEntryLocalService) {
+		this.assetEntryLocalService = assetEntryLocalService;
+	}
+
+	/**
+	 * Returns the asset entry remote service.
+	 *
+	 * @return the asset entry remote service
+	 */
+	public AssetEntryService getAssetEntryService() {
+		return assetEntryService;
+	}
+
+	/**
+	 * Sets the asset entry remote service.
+	 *
+	 * @param assetEntryService the asset entry remote service
+	 */
+	public void setAssetEntryService(AssetEntryService assetEntryService) {
+		this.assetEntryService = assetEntryService;
+	}
+
+	/**
+	 * Returns the asset entry persistence.
+	 *
+	 * @return the asset entry persistence
+	 */
+	public AssetEntryPersistence getAssetEntryPersistence() {
+		return assetEntryPersistence;
+	}
+
+	/**
+	 * Sets the asset entry persistence.
+	 *
+	 * @param assetEntryPersistence the asset entry persistence
+	 */
+	public void setAssetEntryPersistence(
+		AssetEntryPersistence assetEntryPersistence) {
+		this.assetEntryPersistence = assetEntryPersistence;
+	}
+
+	/**
+	 * Returns the asset link local service.
+	 *
+	 * @return the asset link local service
+	 */
+	public AssetLinkLocalService getAssetLinkLocalService() {
+		return assetLinkLocalService;
+	}
+
+	/**
+	 * Sets the asset link local service.
+	 *
+	 * @param assetLinkLocalService the asset link local service
+	 */
+	public void setAssetLinkLocalService(
+		AssetLinkLocalService assetLinkLocalService) {
+		this.assetLinkLocalService = assetLinkLocalService;
+	}
+
+	/**
+	 * Returns the asset link persistence.
+	 *
+	 * @return the asset link persistence
+	 */
+	public AssetLinkPersistence getAssetLinkPersistence() {
+		return assetLinkPersistence;
+	}
+
+	/**
+	 * Sets the asset link persistence.
+	 *
+	 * @param assetLinkPersistence the asset link persistence
+	 */
+	public void setAssetLinkPersistence(
+		AssetLinkPersistence assetLinkPersistence) {
+		this.assetLinkPersistence = assetLinkPersistence;
+	}
+
 	public void afterPropertiesSet() {
+		Class<?> clazz = getClass();
+
+		_classLoader = clazz.getClassLoader();
 	}
 
 	public void destroy() {
@@ -346,10 +526,24 @@ public abstract class CalendarBookingServiceBaseImpl extends PrincipalBean
 		_beanIdentifier = beanIdentifier;
 	}
 
-	protected ClassLoader getClassLoader() {
-		Class<?> clazz = getClass();
+	public Object invokeMethod(String name, String[] parameterTypes,
+		Object[] arguments) throws Throwable {
+		Thread currentThread = Thread.currentThread();
 
-		return clazz.getClassLoader();
+		ClassLoader contextClassLoader = currentThread.getContextClassLoader();
+
+		if (contextClassLoader != _classLoader) {
+			currentThread.setContextClassLoader(_classLoader);
+		}
+
+		try {
+			return _clpInvoker.invokeMethod(name, parameterTypes, arguments);
+		}
+		finally {
+			if (contextClassLoader != _classLoader) {
+				currentThread.setContextClassLoader(contextClassLoader);
+			}
+		}
 	}
 
 	protected Class<?> getModelClass() {
@@ -379,26 +573,34 @@ public abstract class CalendarBookingServiceBaseImpl extends PrincipalBean
 		}
 	}
 
+	@BeanReference(type = CalendarLocalService.class)
+	protected CalendarLocalService calendarLocalService;
+	@BeanReference(type = CalendarService.class)
+	protected CalendarService calendarService;
+	@BeanReference(type = CalendarPersistence.class)
+	protected CalendarPersistence calendarPersistence;
+	@BeanReference(type = CalendarFinder.class)
+	protected CalendarFinder calendarFinder;
 	@BeanReference(type = CalendarBookingLocalService.class)
 	protected CalendarBookingLocalService calendarBookingLocalService;
 	@BeanReference(type = CalendarBookingService.class)
 	protected CalendarBookingService calendarBookingService;
 	@BeanReference(type = CalendarBookingPersistence.class)
 	protected CalendarBookingPersistence calendarBookingPersistence;
-	@BeanReference(type = CalendarEventLocalService.class)
-	protected CalendarEventLocalService calendarEventLocalService;
-	@BeanReference(type = CalendarEventService.class)
-	protected CalendarEventService calendarEventService;
-	@BeanReference(type = CalendarEventPersistence.class)
-	protected CalendarEventPersistence calendarEventPersistence;
+	@BeanReference(type = CalendarBookingFinder.class)
+	protected CalendarBookingFinder calendarBookingFinder;
 	@BeanReference(type = CalendarResourceLocalService.class)
 	protected CalendarResourceLocalService calendarResourceLocalService;
 	@BeanReference(type = CalendarResourceService.class)
 	protected CalendarResourceService calendarResourceService;
 	@BeanReference(type = CalendarResourcePersistence.class)
 	protected CalendarResourcePersistence calendarResourcePersistence;
+	@BeanReference(type = CalendarResourceFinder.class)
+	protected CalendarResourceFinder calendarResourceFinder;
 	@BeanReference(type = CounterLocalService.class)
 	protected CounterLocalService counterLocalService;
+	@BeanReference(type = MailService.class)
+	protected MailService mailService;
 	@BeanReference(type = ResourceLocalService.class)
 	protected ResourceLocalService resourceLocalService;
 	@BeanReference(type = UserLocalService.class)
@@ -407,5 +609,17 @@ public abstract class CalendarBookingServiceBaseImpl extends PrincipalBean
 	protected UserService userService;
 	@BeanReference(type = UserPersistence.class)
 	protected UserPersistence userPersistence;
+	@BeanReference(type = AssetEntryLocalService.class)
+	protected AssetEntryLocalService assetEntryLocalService;
+	@BeanReference(type = AssetEntryService.class)
+	protected AssetEntryService assetEntryService;
+	@BeanReference(type = AssetEntryPersistence.class)
+	protected AssetEntryPersistence assetEntryPersistence;
+	@BeanReference(type = AssetLinkLocalService.class)
+	protected AssetLinkLocalService assetLinkLocalService;
+	@BeanReference(type = AssetLinkPersistence.class)
+	protected AssetLinkPersistence assetLinkPersistence;
 	private String _beanIdentifier;
+	private ClassLoader _classLoader;
+	private CalendarBookingServiceClpInvoker _clpInvoker = new CalendarBookingServiceClpInvoker();
 }

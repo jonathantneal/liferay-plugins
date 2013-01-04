@@ -32,7 +32,7 @@
 	</antelope:stringutil>
 
 	<if>
-		<antelope:endswith string="${plugin.name}" with="-client" />
+		<antelope:endswith string="${plugin.name}" with="-shared" />
 		<then>
 			<property name="plugin.file" value="${project.dir}/dist/${plugin.name}-${lp.version}.${plugin.version}${lp.version.file.suffix}.jar" />
 			<property name="plugin.src.file" value="${project.dir}/dist/${plugin.name}-src-${lp.version}.${plugin.version}${lp.version.file.suffix}.zip" />
@@ -43,13 +43,63 @@
 		</else>
 	</if>
 
+	<macrodef name="classpath-to-jar">
+		<attribute name="classpathref" />
+		<attribute name="jarfile" />
+
+		<sequential>
+
+			<!--
+			Windows chokes if the classpath is longer than 32 kb. But the
+			workaround only works for Ant 1.8 and above. See LPS-29085.
+			-->
+
+			<if>
+				<and>
+					<not>
+						<contains string="${ant.version}" substring="1.6" />
+					</not>
+					<not>
+						<contains string="${ant.version}" substring="1.7" />
+					</not>
+				</and>
+				<then>
+					<manifestclasspath
+						jarfile="@{jarfile}"
+						maxParentLevels="99"
+						property="manifest.classpath"
+					>
+						<classpath refid="@{classpathref}" />
+					</manifestclasspath>
+
+					<manifest file="@{jarfile}.manifest">
+						<attribute name="Class-Path" value="${manifest.classpath}" />
+					</manifest>
+
+					<jar
+						destfile="@{jarfile}"
+						manifest="@{jarfile}.manifest"
+					/>
+
+					<delete file="@{jarfile}.manifest" />
+
+					<var name="manifest.classpath" unset="true" />
+
+					<path id="@{classpathref}">
+						<fileset file="@{jarfile}" />
+					</path>
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
 	<target name="all">
 		<antcall target="clean" />
 		<antcall target="deploy" />
 	</target>
 
 	<target name="build-client">
-		<property name="client.url" value="http://localhost:8080/${plugin.name}/axis" />
+		<property name="client.url" value="http://localhost:8080/${plugin.name}/api/axis" />
 
 		<echo message="Make sure the server is listening on ${client.url}." />
 		<echo message="" />
@@ -152,6 +202,16 @@
 		</path>
 
 		<if>
+			<os family="windows" />
+			<then>
+				<classpath-to-jar
+					classpathref="service.classpath"
+					jarfile="build-service-classpath.jar"
+				/>
+			</then>
+		</if>
+
+		<if>
 			<not>
 				<isset property="service.input.file" />
 			</not>
@@ -163,8 +223,14 @@
 		<java
 			classname="com.liferay.portal.tools.servicebuilder.ServiceBuilder"
 			classpathref="service.classpath"
+			fork="true"
+			newenvironment="true"
 			outputproperty="service.test.output"
 		>
+			<jvmarg value="-Xms512m" />
+			<jvmarg value="-Xmx1024m" />
+			<jvmarg value="-Xss2048k" />
+			<jvmarg value="-XX:MaxPermSize=512m" />
 			<arg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
 			<arg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger" />
 			<arg value="service.input.file=${service.input.file}" />
@@ -190,7 +256,15 @@
 			<arg value="service.bean.locator.util=com.liferay.util.bean.PortletBeanLocatorUtil" />
 			<arg value="service.props.util=com.liferay.util.service.ServiceProps" />
 			<arg value="service.plugin.name=${plugin.name}" />
+			<arg value="service.target.entity.name=${service.target.entity.name}" />
 		</java>
+
+		<if>
+			<os family="windows" />
+			<then>
+				<delete file="build-service-classpath.jar" />
+			</then>
+		</if>
 
 		<echo>${service.test.output}</echo>
 
@@ -234,6 +308,16 @@
 			<pathelement location="docroot/WEB-INF/classes" />
 		</path>
 
+		<if>
+			<os family="windows" />
+			<then>
+				<classpath-to-jar
+					classpathref="wsdd.classpath"
+					jarfile="build-wsdd-classpath.jar"
+				/>
+			</then>
+		</if>
+
 		<java
 			classname="com.liferay.portal.tools.WSDDBuilder"
 			classpathref="wsdd.classpath"
@@ -248,6 +332,13 @@
 			<arg value="wsdd.service.namespace=Plugin" />
 			<arg value="wsdd.output.path=docroot/WEB-INF/src/" />
 		</java>
+
+		<if>
+			<os family="windows" />
+			<then>
+				<delete file="build-wsdd-classpath.jar" />
+			</then>
+		</if>
 	</target>
 
 	<target name="build-wsdl">
@@ -313,6 +404,37 @@
 				<delete dir="${tstamp.value}" />
 			</sequential>
 		</for>
+	</target>
+
+	<target name="build-xsd">
+		<tstamp>
+			<format property="tstamp.value" pattern="yyyyMMddkkmmssSSS" />
+		</tstamp>
+
+		<mkdir dir="${tstamp.value}" />
+
+		<path id="plugin-lib.classpath">
+			<fileset dir="${app.server.lib.portal.dir}" includes="xbean.jar" />
+			<fileset dir="docroot/WEB-INF/lib" includes="*.jar" />
+			<pathelement location="docroot/WEB-INF/classes" />
+		</path>
+
+		<taskdef classname="org.apache.xmlbeans.impl.tool.XMLBean" classpathref="portal.classpath" name="xmlbean" />
+
+		<xmlbean
+			classgendir="${tstamp.value}"
+			classpathref="plugin-lib.classpath"
+			srcgendir="${tstamp.value}"
+		>
+			<fileset dir="docroot/WEB-INF/xsd" includes="**/*.*" />
+		</xmlbean>
+
+		<zip
+			basedir="${tstamp.value}"
+			destfile="docroot/WEB-INF/lib/${plugin.name}-xbean.jar"
+		/>
+
+		<delete dir="${tstamp.value}" />
 	</target>
 
 	<target name="clean" description="clean">
@@ -411,6 +533,57 @@
 		<copy todir="docroot/WEB-INF/lib">
 			<fileset dir="${app.server.lib.portal.dir}" includes="${plugin.jars}" />
 		</copy>
+
+		<if>
+			<isset property="import.shared" />
+			<then>
+				<var name="import.shared" value="portal-compat-shared,${import.shared}" />
+			</then>
+			<else>
+				<var name="import.shared" value="portal-compat-shared" />
+			</else>
+		</if>
+
+		<for list="${import.shared}" param="import.shared.current">
+			<sequential>
+				<if>
+					<available file="${project.dir}/shared/@{import.shared.current}/src" />
+					<then>
+						<ant dir="${project.dir}/shared/@{import.shared.current}" target="jar" inheritAll="false" />
+
+						<for param="import.shared.full.path">
+							<path>
+								<fileset dir="${project.dir}/dist" includes="@{import.shared.current}-${lp.version}.1*.jar" />
+							</path>
+							<sequential>
+								<copy
+									file="@{import.shared.full.path}"
+									tofile="docroot/WEB-INF/lib/@{import.shared.current}.jar"
+								/>
+							</sequential>
+						</for>
+
+						<if>
+							<available file="${project.dir}/shared/@{import.shared.current}/lib" />
+							<then>
+								<copy todir="docroot/WEB-INF/lib/">
+									<fileset dir="${project.dir}/shared/@{import.shared.current}/lib" includes="*.jar" />
+								</copy>
+							</then>
+						</if>
+					</then>
+				</if>
+			</sequential>
+		</for>
+
+		<if>
+			<available file="overwrite" />
+			<then>
+				<copy overwrite="true" preservelastmodified="true" todir="docroot">
+					<fileset dir="overwrite" />
+				</copy>
+			</then>
+		</if>
 
 		<if>
 			<isset property="plugin-package.required-deployment-contexts" />
@@ -601,7 +774,9 @@ Please find a solution that does not require portal-impl.jar.
 
 					<!-- Dependent Libraries -->
 
+					<arg value="${app.server.lib.portal.dir}/util-bridges.jar" />
 					<arg value="${app.server.lib.portal.dir}/util-java.jar" />
+					<arg value="${app.server.lib.portal.dir}/util-taglib.jar" />
 				</java>
 			</then>
 			<elseif>
@@ -630,7 +805,9 @@ Please find a solution that does not require portal-impl.jar.
 
 						<!-- Dependent Libraries -->
 
+						<arg value="${app.server.lib.portal.dir}/util-bridges.jar" />
 						<arg value="${app.server.lib.portal.dir}/util-java.jar" />
+						<arg value="${app.server.lib.portal.dir}/util-taglib.jar" />
 					</java>
 				</then>
 			</elseif>
@@ -653,6 +830,12 @@ Please find a solution that does not require portal-impl.jar.
 						<jvmarg value="-Ddeployer.app.server.type=${app.server.type}" />
 						<jvmarg value="-Ddeployer.unpack.war=${auto.deploy.unpack.war}" />
 						<jvmarg value="-Ddeployer.file.pattern=${plugin.name}-*.war" />
+
+						<!-- Dependent Libraries -->
+
+						<arg value="${app.server.lib.portal.dir}/util-bridges.jar" />
+						<arg value="${app.server.lib.portal.dir}/util-java.jar" />
+						<arg value="${app.server.lib.portal.dir}/util-taglib.jar" />
 					</java>
 				</then>
 			</elseif>
@@ -724,6 +907,39 @@ Please find a solution that does not require portal-impl.jar.
 
 						<!-- Dependent Libraries -->
 
+						<arg value="${app.server.lib.portal.dir}/util-bridges.jar" />
+						<arg value="${app.server.lib.portal.dir}/util-java.jar" />
+						<arg value="${app.server.lib.portal.dir}/util-taglib.jar" />
+					</java>
+				</then>
+			</elseif>
+			<elseif>
+				<antelope:endswith string="${plugin.name}" with="-web" />
+				<then>
+					<java
+						classname="com.liferay.portal.tools.deploy.WebDeployer"
+						classpathref="portal.classpath"
+						fork="true"
+						newenvironment="true"
+					>
+
+						<!-- Required Arguments -->
+
+						<jvmarg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
+						<jvmarg value="-Dliferay.lib.portal.dir=${app.server.lib.portal.dir}" />
+						<jvmarg value="-Ddeployer.base.dir=${project.dir}/dist" />
+						<jvmarg value="-Ddeployer.dest.dir=${app.server.deploy.dir}" />
+						<jvmarg value="-Ddeployer.app.server.type=${app.server.type}" />
+						<jvmarg value="-Ddeployer.unpack.war=${auto.deploy.unpack.war}" />
+						<jvmarg value="-Ddeployer.file.pattern=${plugin.name}-*.war" />
+
+						<!-- Optional Arguments -->
+
+						<jvmarg value="-Ddeployer.tomcat.lib.dir=${app.server.tomcat.lib.global.dir}" />
+
+						<!-- Dependent Libraries -->
+
+						<arg value="${app.server.lib.portal.dir}/util-bridges.jar" />
 						<arg value="${app.server.lib.portal.dir}/util-java.jar" />
 						<arg value="${app.server.lib.portal.dir}/util-taglib.jar" />
 					</java>
@@ -737,7 +953,7 @@ Please find a solution that does not require portal-impl.jar.
 			<path>
 				<fileset
 					dir="."
-					includes="docroot/WEB-INF/wsdl/*.wsdl"
+					includes="docroot/WEB-INF/wsdl/*.wsdl,docroot/WEB-INF/wsdl/**/*.wsdl"
 				/>
 			</path>
 			<sequential>
@@ -749,6 +965,29 @@ Please find a solution that does not require portal-impl.jar.
 				>
 					<jvmarg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
 					<jvmarg value="-Dxml.formatter.file=@{wsdl.full.path}" />
+					<jvmarg value="-Dxml.formatter.strip.comments=true" />
+				</java>
+			</sequential>
+		</for>
+	</target>
+
+	<target name="format-xsd">
+		<for param="xsd.full.path">
+			<path>
+				<fileset
+					dir="."
+					includes="docroot/WEB-INF/xsd/*.xsd,docroot/WEB-INF/xsd/**/*.xsd"
+				/>
+			</path>
+			<sequential>
+				<java
+					classname="com.liferay.portal.tools.XMLFormatter"
+					classpathref="portal.classpath"
+					fork="true"
+					newenvironment="true"
+				>
+					<jvmarg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
+					<jvmarg value="-Dxml.formatter.file=@{xsd.full.path}" />
 					<jvmarg value="-Dxml.formatter.strip.comments=true" />
 				</java>
 			</sequential>
@@ -794,6 +1033,7 @@ Please find a solution that does not require portal-impl.jar.
 			src="${zip.file.name}"
 		>
 			<patternset
+				excludes="${zip.excludes}"
 				includes="${zip.includes}"
 			/>
 		</unzip>
@@ -885,6 +1125,7 @@ Please find a solution that does not require portal-impl.jar.
 					<jvmarg value="-Xmx1024m" />
 					<jvmarg value="-XX:MaxPermSize=256m" />
 					<jvmarg value="-Dexternal-properties=${test.properties}" />
+					<jvmarg value="-Dfile.encoding=UTF-8" />
 					<jvmarg value="-Djava.net.preferIPv4Stack=true" />
 					<jvmarg value="-Duser.timezone=GMT" />
 					<classpath location="test-coverage" />

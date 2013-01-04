@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -39,7 +40,7 @@ import com.liferay.portal.util.PortletKeys;
 import com.liferay.util.Encryptor;
 import com.liferay.util.axis.ServletUtil;
 import com.liferay.wsrp.model.WSRPProducer;
-import com.liferay.wsrp.util.ExtensionUtil;
+import com.liferay.wsrp.util.ExtensionHelperUtil;
 import com.liferay.wsrp.util.WebKeys;
 
 import java.rmi.RemoteException;
@@ -204,15 +205,15 @@ public class V2MarkupServiceImpl
 
 		Extension[] extensions = clientData.getExtensions();
 
-		MessageElement[] clientAttributes = ExtensionUtil.getMessageElements(
-			extensions);
+		MessageElement[] clientAttributes =
+			ExtensionHelperUtil.getMessageElements(extensions);
 
 		if (clientAttributes == null) {
 			return;
 		}
 
 		for (MessageElement clientAttribute : clientAttributes) {
-			String name = ExtensionUtil.getNameAttribute(clientAttribute);
+			String name = ExtensionHelperUtil.getNameAttribute(clientAttribute);
 			String value = clientAttribute.getValue();
 
 			if (name.equalsIgnoreCase(HttpHeaders.ACCEPT_ENCODING) ||
@@ -267,6 +268,10 @@ public class V2MarkupServiceImpl
 		httpOptions.setLocation(getURL(getResource, wsrpProducer));
 
 		ResourceParams resourceParams = getResource.getResourceParams();
+
+		UploadContext[] uploadContexts = resourceParams.getUploadContexts();
+
+		processUploadContexts(uploadContexts, httpOptions);
 
 		NamedString[] formParameters = resourceParams.getFormParameters();
 
@@ -395,41 +400,7 @@ public class V2MarkupServiceImpl
 
 		UploadContext[] uploadContexts = interactionParams.getUploadContexts();
 
-		if (uploadContexts != null) {
-			for (UploadContext uploadContext : uploadContexts) {
-				NamedString mimeAttribute = uploadContext.getMimeAttributes(0);
-
-				String[] mimeAttributeValues = StringUtil.split(
-					mimeAttribute.getValue(), StringPool.SEMICOLON);
-
-				String name = StringUtil.replace(
-					mimeAttributeValues[1], "name=", StringPool.BLANK);
-
-				name = StringUtil.trim(name);
-
-				String fileName = StringUtil.replace(
-					mimeAttributeValues[2], "filename=", StringPool.BLANK);
-
-				fileName = StringUtil.trim(fileName);
-
-				String contentType = uploadContext.getMimeType();
-
-				String charSet = null;
-
-				if (contentType.contains(StringPool.SEMICOLON)) {
-					int pos = contentType.indexOf(StringPool.SEMICOLON);
-
-					charSet = contentType.substring(pos + 1);
-					charSet = StringUtil.trim(charSet);
-
-					contentType = contentType.substring(0, pos);
-				}
-
-				httpOptions.addFilePart(
-					name, fileName, uploadContext.getUploadData(), contentType,
-					charSet);
-			}
-		}
+		processUploadContexts(uploadContexts, httpOptions);
 
 		NamedString[] formParameters = interactionParams.getFormParameters();
 
@@ -722,7 +693,7 @@ public class V2MarkupServiceImpl
 			PortletContext portletContext, WSRPProducer wsrpProducer)
 		throws Exception {
 
-		StringBuilder sb = new StringBuilder();
+		StringBundler sb = new StringBundler();
 
 		String[] locales = mimeRequest.getLocales();
 
@@ -791,8 +762,9 @@ public class V2MarkupServiceImpl
 		}
 
 		if (lifecycle.equals("0")) {
-			MessageElement[] formParameters = ExtensionUtil.getMessageElements(
-				mimeRequest.getExtensions());
+			MessageElement[] formParameters =
+				ExtensionHelperUtil.getMessageElements(
+					mimeRequest.getExtensions());
 
 			if (formParameters != null) {
 				String namespace = PortalUtil.getPortletNamespace(portletId);
@@ -801,7 +773,7 @@ public class V2MarkupServiceImpl
 					sb.append(StringPool.AMPERSAND);
 
 					String name = namespace.concat(
-						ExtensionUtil.getNameAttribute(formParameter));
+						ExtensionHelperUtil.getNameAttribute(formParameter));
 
 					sb.append(name);
 					sb.append(StringPool.EQUAL);
@@ -832,16 +804,16 @@ public class V2MarkupServiceImpl
 
 		String portalURL = PortalUtil.getPortalURL(request);
 
-		StringBuilder sb = new StringBuilder();
+		StringBundler sb = new StringBundler(5);
 
 		sb.append(portalURL);
+		sb.append(PortalUtil.getPathContext());
 
 		if (Validator.isNotNull(languageId)) {
 			sb.append(StringPool.SLASH);
 			sb.append(languageId);
 		}
 
-		sb.append(PortalUtil.getPathContext());
 		sb.append(_PATH_WIDGET);
 
 		return sb.toString();
@@ -851,6 +823,48 @@ public class V2MarkupServiceImpl
 		String windowState = mimeRequest.getWindowState();
 
 		return windowState.substring(5);
+	}
+
+	protected void processUploadContexts(
+		UploadContext[] uploadContexts, Http.Options httpOptions) {
+
+		if (uploadContexts == null) {
+			return;
+		}
+
+		for (UploadContext uploadContext : uploadContexts) {
+			NamedString mimeAttribute = uploadContext.getMimeAttributes(0);
+
+			String[] mimeAttributeValues = StringUtil.split(
+				mimeAttribute.getValue(), StringPool.SEMICOLON);
+
+			String name = StringUtil.replace(
+				mimeAttributeValues[1], "name=", StringPool.BLANK);
+
+			name = StringUtil.trim(name);
+
+			String fileName = StringUtil.replace(
+				mimeAttributeValues[2], "filename=", StringPool.BLANK);
+
+			fileName = StringUtil.trim(fileName);
+
+			String contentType = uploadContext.getMimeType();
+
+			String charSet = null;
+
+			if (contentType.contains(StringPool.SEMICOLON)) {
+				int pos = contentType.indexOf(StringPool.SEMICOLON);
+
+				charSet = contentType.substring(pos + 1);
+				charSet = StringUtil.trim(charSet);
+
+				contentType = contentType.substring(0, pos);
+			}
+
+			httpOptions.addFilePart(
+				name, fileName, uploadContext.getUploadData(), contentType,
+				charSet);
+		}
 	}
 
 	private static final String _PATH_WIDGET = "/widget/c/portal/layout";

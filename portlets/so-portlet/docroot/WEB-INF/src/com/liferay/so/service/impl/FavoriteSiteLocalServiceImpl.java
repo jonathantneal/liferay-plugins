@@ -37,7 +37,7 @@ import java.util.List;
 public class FavoriteSiteLocalServiceImpl
 	extends FavoriteSiteLocalServiceBaseImpl {
 
-	 public FavoriteSite addFavoriteSite(long userId, long groupId)
+	public FavoriteSite addFavoriteSite(long userId, long groupId)
 		throws PortalException, SystemException {
 
 		validate(groupId);
@@ -53,7 +53,7 @@ public class FavoriteSiteLocalServiceImpl
 		favoriteSite.setCompanyId(user.getCompanyId());
 		favoriteSite.setUserId(userId);
 
-		favoriteSitePersistence.update(favoriteSite, false);
+		favoriteSitePersistence.update(favoriteSite);
 
 		return favoriteSite;
 	}

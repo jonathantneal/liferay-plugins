@@ -2,15 +2,18 @@
 /**
  * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This file is part of Liferay Social Office. Liferay Social Office is free
+ * software: you can redistribute it and/or modify it under the terms of the GNU
+ * Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * Liferay Social Office is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Liferay Social Office. If not, see http://www.gnu.org/licenses/agpl-3.0.html.
  */
 --%>
 
@@ -33,12 +36,40 @@ boolean neverDue = true;
 <div class="task-data-container">
 	<c:if test="<%= tasksEntry.getAssigneeUserId() > 0 %>">
 		<div class="task-data assignee">
-			<liferay-ui:message arguments="<%= PortalUtil.getUserName(tasksEntry.getAssigneeUserId(), tasksEntry.getAssigneeFullName(), request) %>" key="assigned-to-x" />
+
+			<%
+			String assigneeDisplayURL = StringPool.BLANK;
+			String taglibAssigneeDisplayURL = LanguageUtil.get(pageContext, "unknown-user");
+
+			User assigneeUser = UserLocalServiceUtil.fetchUser(tasksEntry.getAssigneeUserId());
+
+			if (assigneeUser != null) {
+				assigneeDisplayURL = assigneeUser.getDisplayURL(themeDisplay);
+
+				taglibAssigneeDisplayURL = "<a href=\"" + assigneeDisplayURL + "\">" + HtmlUtil.escape(tasksEntry.getAssigneeFullName()) + "</a>";
+			}
+			%>
+
+			<liferay-ui:message arguments="<%= taglibAssigneeDisplayURL %>" key="assigned-to-x" />
 		</div>
 	</c:if>
 
 	<div class="task-data reporter">
-		<liferay-ui:message arguments="<%= PortalUtil.getUserName(tasksEntry.getUserId(), tasksEntry.getReporterFullName(), request) %>" key="created-by-x" />
+
+			<%
+			String reporterDisplayURL = StringPool.BLANK;
+			String taglibReporterDisplayURL = LanguageUtil.get(pageContext, "unknown-user");
+
+			User reporterUser = UserLocalServiceUtil.fetchUser(tasksEntry.getUserId());
+
+			if (reporterUser != null) {
+				reporterDisplayURL = reporterUser.getDisplayURL(themeDisplay);
+
+				taglibReporterDisplayURL = "<a href=\"" + reporterDisplayURL + "\">" + HtmlUtil.escape(tasksEntry.getReporterFullName()) + "</a>";
+			}
+			%>
+
+		<liferay-ui:message arguments="<%= taglibReporterDisplayURL %>" key="created-by-x" />
 	</div>
 
 	<div class="task-data last modified-date">

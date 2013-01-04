@@ -87,6 +87,10 @@ public class CalendarResourceLocalServiceWrapper
 		return _calendarResourceLocalService.deleteCalendarResource(calendarResource);
 	}
 
+	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
+		return _calendarResourceLocalService.dynamicQuery();
+	}
+
 	/**
 	* Performs a dynamic query on the database and returns the matching rows.
 	*
@@ -105,7 +109,7 @@ public class CalendarResourceLocalServiceWrapper
 	* Performs a dynamic query on the database and returns a range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -126,7 +130,7 @@ public class CalendarResourceLocalServiceWrapper
 	* Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -208,7 +212,7 @@ public class CalendarResourceLocalServiceWrapper
 	* Returns a range of all the calendar resources.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarResourceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of calendar resources
@@ -247,22 +251,6 @@ public class CalendarResourceLocalServiceWrapper
 	}
 
 	/**
-	* Updates the calendar resource in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
-	*
-	* @param calendarResource the calendar resource
-	* @param merge whether to merge the calendar resource with the current session. See {@link com.liferay.portal.service.persistence.BatchSession#update(com.liferay.portal.kernel.dao.orm.Session, com.liferay.portal.model.BaseModel, boolean)} for an explanation.
-	* @return the calendar resource that was updated
-	* @throws SystemException if a system exception occurred
-	*/
-	public com.liferay.calendar.model.CalendarResource updateCalendarResource(
-		com.liferay.calendar.model.CalendarResource calendarResource,
-		boolean merge)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.updateCalendarResource(calendarResource,
-			merge);
-	}
-
-	/**
 	* Returns the Spring bean ID for this bean.
 	*
 	* @return the Spring bean ID for this bean
@@ -280,102 +268,90 @@ public class CalendarResourceLocalServiceWrapper
 		_calendarResourceLocalService.setBeanIdentifier(beanIdentifier);
 	}
 
+	public java.lang.Object invokeMethod(java.lang.String name,
+		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
+		throws java.lang.Throwable {
+		return _calendarResourceLocalService.invokeMethod(name, parameterTypes,
+			arguments);
+	}
+
 	public com.liferay.calendar.model.CalendarResource addCalendarResource(
-		long userId, java.lang.String className, long classPK,
+		long userId, long groupId, java.lang.String className, long classPK,
+		java.lang.String classUuid, java.lang.String code,
 		java.util.Map<java.util.Locale, java.lang.String> nameMap,
 		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
 		boolean active, com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _calendarResourceLocalService.addCalendarResource(userId,
-			className, classPK, nameMap, descriptionMap, active, serviceContext);
+			groupId, className, classPK, classUuid, code, nameMap,
+			descriptionMap, active, serviceContext);
 	}
 
-	public com.liferay.calendar.model.CalendarResource getCalendarResource(
-		java.lang.String className, long classPK)
+	public void deleteCalendarResources(long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.getCalendarResource(className,
+		_calendarResourceLocalService.deleteCalendarResources(groupId);
+	}
+
+	public com.liferay.calendar.model.CalendarResource fetchCalendarResource(
+		long classNameId, long classPK)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _calendarResourceLocalService.fetchCalendarResource(classNameId,
 			classPK);
 	}
 
 	public java.util.List<com.liferay.calendar.model.CalendarResource> getCalendarResources(
-		boolean active, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		long groupId)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.getCalendarResources(active,
-			start, end, orderByComparator);
-	}
-
-	public int getCalendarResourcesCount(boolean active)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.getCalendarResourcesCount(active);
-	}
-
-	public java.util.List<com.liferay.calendar.model.CalendarResource> getCompanyCalendarResources(
-		long companyId, java.lang.String name, boolean active, int start,
-		int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.getCompanyCalendarResources(companyId,
-			name, active, start, end, orderByComparator);
-	}
-
-	public int getCompanyCalendarResourcesCount(long companyId,
-		java.lang.String name, boolean active, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.getCompanyCalendarResourcesCount(companyId,
-			name, active, start, end, orderByComparator);
-	}
-
-	public java.util.List<com.liferay.calendar.model.CalendarResource> getGroupCalendarResources(
-		long groupId, boolean active, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.getGroupCalendarResources(groupId,
-			active, start, end, orderByComparator);
-	}
-
-	public java.util.List<com.liferay.calendar.model.CalendarResource> getGroupCalendarResources(
-		long groupId, java.lang.String name, boolean active, int start,
-		int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.getGroupCalendarResources(groupId,
-			name, active, start, end, orderByComparator);
-	}
-
-	public int getGroupCalendarResourcesCount(long groupId, boolean active)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.getGroupCalendarResourcesCount(groupId,
-			active);
-	}
-
-	public int getGroupCalendarResourcesCount(long groupId,
-		java.lang.String name, boolean active, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.getGroupCalendarResourcesCount(groupId,
-			name, active, start, end, orderByComparator);
+		return _calendarResourceLocalService.getCalendarResources(groupId);
 	}
 
 	public java.util.List<com.liferay.calendar.model.CalendarResource> search(
-		long companyId, long[] groupIds, java.lang.String name,
-		java.lang.String description, java.lang.Boolean active,
-		boolean andOperator, int start, int end,
+		long companyId, long[] groupIds, long[] classNameIds,
+		java.lang.String code, java.lang.String name,
+		java.lang.String description, boolean active, boolean andOperator,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		return _calendarResourceLocalService.search(companyId, groupIds, name,
-			description, active, andOperator, start, end, orderByComparator);
+		return _calendarResourceLocalService.search(companyId, groupIds,
+			classNameIds, code, name, description, active, andOperator, start,
+			end, orderByComparator);
+	}
+
+	public java.util.List<com.liferay.calendar.model.CalendarResource> searchByKeywords(
+		long companyId, long[] groupIds, long[] classNameIds,
+		java.lang.String keywords, boolean active, boolean andOperator,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _calendarResourceLocalService.searchByKeywords(companyId,
+			groupIds, classNameIds, keywords, active, andOperator, start, end,
+			orderByComparator);
 	}
 
 	public int searchCount(long companyId, long[] groupIds,
-		java.lang.String name, java.lang.String description,
-		java.lang.Boolean active, boolean andOperator)
+		long[] classNameIds, java.lang.String keywords, boolean active)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _calendarResourceLocalService.searchCount(companyId, groupIds,
-			name, description, active, andOperator);
+			classNameIds, keywords, active);
+	}
+
+	public int searchCount(long companyId, long[] groupIds,
+		long[] classNameIds, java.lang.String code, java.lang.String name,
+		java.lang.String description, boolean active, boolean andOperator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _calendarResourceLocalService.searchCount(companyId, groupIds,
+			classNameIds, code, name, description, active, andOperator);
+	}
+
+	public void updateAsset(long userId,
+		com.liferay.calendar.model.CalendarResource calendarResource,
+		long[] assetCategoryIds, java.lang.String[] assetTagNames)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		_calendarResourceLocalService.updateAsset(userId, calendarResource,
+			assetCategoryIds, assetTagNames);
 	}
 
 	public com.liferay.calendar.model.CalendarResource updateCalendarResource(

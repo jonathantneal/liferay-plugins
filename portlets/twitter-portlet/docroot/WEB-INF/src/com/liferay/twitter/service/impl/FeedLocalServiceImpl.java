@@ -145,7 +145,7 @@ public class FeedLocalServiceImpl extends FeedLocalServiceBaseImpl {
 			feed.setModifiedDate(now);
 			feed.setTwitterScreenName(twitterScreenName);
 
-			feedPersistence.update(feed, false);
+			feedPersistence.update(feed);
 
 			if (jsonArray == null) {
 				return;
@@ -203,12 +203,12 @@ public class FeedLocalServiceImpl extends FeedLocalServiceBaseImpl {
 		finally {
 			feed.setModifiedDate(now);
 
-			feedPersistence.update(feed, false);
+			feedPersistence.update(feed);
 		}
 	}
 
 	private static final String _URL =
-		"http://twitter.com/statuses/user_timeline/";
+		"http://api.twitter.com/1/statuses/user_timeline/";
 
 	private static Log _log = LogFactoryUtil.getLog(FeedLocalServiceImpl.class);
 

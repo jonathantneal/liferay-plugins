@@ -39,7 +39,9 @@ import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The base model implementation for the Foo service. Represents a row in the &quot;SSB_Foo&quot; database table, with each column mapped to a property of this class.
@@ -97,6 +99,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	public static long FIELD2_COLUMN_BITMASK = 2L;
 	public static long GROUPID_COLUMN_BITMASK = 4L;
 	public static long UUID_COLUMN_BITMASK = 8L;
+	public static long FIELD1_COLUMN_BITMASK = 16L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -105,6 +108,10 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	 * @return the normal model instance
 	 */
 	public static Foo toModel(FooSoap soapModel) {
+		if (soapModel == null) {
+			return null;
+		}
+
 		Foo model = new FooImpl();
 
 		model.setUuid(soapModel.getUuid());
@@ -131,6 +138,10 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	 * @return the normal model instances
 	 */
 	public static List<Foo> toModels(FooSoap[] soapModels) {
+		if (soapModels == null) {
+			return null;
+		}
+
 		List<Foo> models = new ArrayList<Foo>(soapModels.length);
 
 		for (FooSoap soapModel : soapModels) {
@@ -168,6 +179,108 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 
 	public String getModelClassName() {
 		return Foo.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("uuid", getUuid());
+		attributes.put("fooId", getFooId());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("field1", getField1());
+		attributes.put("field2", getField2());
+		attributes.put("field3", getField3());
+		attributes.put("field4", getField4());
+		attributes.put("field5", getField5());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		String uuid = (String)attributes.get("uuid");
+
+		if (uuid != null) {
+			setUuid(uuid);
+		}
+
+		Long fooId = (Long)attributes.get("fooId");
+
+		if (fooId != null) {
+			setFooId(fooId);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		String field1 = (String)attributes.get("field1");
+
+		if (field1 != null) {
+			setField1(field1);
+		}
+
+		Boolean field2 = (Boolean)attributes.get("field2");
+
+		if (field2 != null) {
+			setField2(field2);
+		}
+
+		Integer field3 = (Integer)attributes.get("field3");
+
+		if (field3 != null) {
+			setField3(field3);
+		}
+
+		Date field4 = (Date)attributes.get("field4");
+
+		if (field4 != null) {
+			setField4(field4);
+		}
+
+		String field5 = (String)attributes.get("field5");
+
+		if (field5 != null) {
+			setField5(field5);
+		}
 	}
 
 	@JSON
@@ -370,29 +483,26 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	}
 
 	@Override
-	public Foo toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Foo)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					Foo.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			Foo.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Foo toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Foo)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -660,9 +770,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	}
 
 	private static ClassLoader _classLoader = Foo.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			Foo.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { Foo.class };
 	private String _uuid;
 	private String _originalUuid;
 	private long _fooId;
@@ -684,7 +792,6 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	private int _field3;
 	private Date _field4;
 	private String _field5;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private Foo _escapedModelProxy;
+	private Foo _escapedModel;
 }

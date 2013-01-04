@@ -36,6 +36,8 @@ import java.io.Serializable;
 import java.sql.Types;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The base model implementation for the Feed service. Represents a row in the &quot;Twitter_Feed&quot; database table, with each column mapped to a property of this class.
@@ -70,6 +72,8 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 		};
 	public static final String TABLE_SQL_CREATE = "create table Twitter_Feed (feedId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,twitterUserId LONG,twitterScreenName VARCHAR(75) null,lastStatusId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table Twitter_Feed";
+	public static final String ORDER_BY_JPQL = " ORDER BY feed.feedId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY Twitter_Feed.feedId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -85,6 +89,7 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 	public static long COMPANYID_COLUMN_BITMASK = 1L;
 	public static long TWITTERSCREENNAME_COLUMN_BITMASK = 2L;
 	public static long TWITTERUSERID_COLUMN_BITMASK = 4L;
+	public static long FEEDID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.twitter.model.Feed"));
 
@@ -113,6 +118,80 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 
 	public String getModelClassName() {
 		return Feed.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("feedId", getFeedId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("twitterUserId", getTwitterUserId());
+		attributes.put("twitterScreenName", getTwitterScreenName());
+		attributes.put("lastStatusId", getLastStatusId());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long feedId = (Long)attributes.get("feedId");
+
+		if (feedId != null) {
+			setFeedId(feedId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long twitterUserId = (Long)attributes.get("twitterUserId");
+
+		if (twitterUserId != null) {
+			setTwitterUserId(twitterUserId);
+		}
+
+		String twitterScreenName = (String)attributes.get("twitterScreenName");
+
+		if (twitterScreenName != null) {
+			setTwitterScreenName(twitterScreenName);
+		}
+
+		Long lastStatusId = (Long)attributes.get("lastStatusId");
+
+		if (lastStatusId != null) {
+			setLastStatusId(lastStatusId);
+		}
 	}
 
 	public long getFeedId() {
@@ -253,29 +332,26 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 	}
 
 	@Override
-	public Feed toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Feed)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					Feed.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			Feed.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Feed toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Feed)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -486,9 +562,7 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 	}
 
 	private static ClassLoader _classLoader = Feed.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			Feed.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { Feed.class };
 	private long _feedId;
 	private long _companyId;
 	private long _originalCompanyId;
@@ -505,7 +579,6 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 	private String _twitterScreenName;
 	private String _originalTwitterScreenName;
 	private long _lastStatusId;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private Feed _escapedModelProxy;
+	private Feed _escapedModel;
 }

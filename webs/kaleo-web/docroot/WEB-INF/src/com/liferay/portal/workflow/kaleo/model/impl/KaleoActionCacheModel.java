@@ -19,7 +19,10 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.workflow.kaleo.model.KaleoAction;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,10 +34,10 @@ import java.util.Date;
  * @generated
  */
 public class KaleoActionCacheModel implements CacheModel<KaleoAction>,
-	Serializable {
+	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{kaleoActionId=");
 		sb.append(kaleoActionId);
@@ -68,6 +71,8 @@ public class KaleoActionCacheModel implements CacheModel<KaleoAction>,
 		sb.append(script);
 		sb.append(", scriptLanguage=");
 		sb.append(scriptLanguage);
+		sb.append(", scriptRequiredContexts=");
+		sb.append(scriptRequiredContexts);
 		sb.append(", priority=");
 		sb.append(priority);
 		sb.append("}");
@@ -156,11 +161,118 @@ public class KaleoActionCacheModel implements CacheModel<KaleoAction>,
 			kaleoActionImpl.setScriptLanguage(scriptLanguage);
 		}
 
+		if (scriptRequiredContexts == null) {
+			kaleoActionImpl.setScriptRequiredContexts(StringPool.BLANK);
+		}
+		else {
+			kaleoActionImpl.setScriptRequiredContexts(scriptRequiredContexts);
+		}
+
 		kaleoActionImpl.setPriority(priority);
 
 		kaleoActionImpl.resetOriginalValues();
 
 		return kaleoActionImpl;
+	}
+
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		kaleoActionId = objectInput.readLong();
+		groupId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		kaleoClassName = objectInput.readUTF();
+		kaleoClassPK = objectInput.readLong();
+		kaleoDefinitionId = objectInput.readLong();
+		kaleoNodeName = objectInput.readUTF();
+		name = objectInput.readUTF();
+		description = objectInput.readUTF();
+		executionType = objectInput.readUTF();
+		script = objectInput.readUTF();
+		scriptLanguage = objectInput.readUTF();
+		scriptRequiredContexts = objectInput.readUTF();
+		priority = objectInput.readInt();
+	}
+
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(kaleoActionId);
+		objectOutput.writeLong(groupId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+
+		if (kaleoClassName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(kaleoClassName);
+		}
+
+		objectOutput.writeLong(kaleoClassPK);
+		objectOutput.writeLong(kaleoDefinitionId);
+
+		if (kaleoNodeName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(kaleoNodeName);
+		}
+
+		if (name == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(name);
+		}
+
+		if (description == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(description);
+		}
+
+		if (executionType == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(executionType);
+		}
+
+		if (script == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(script);
+		}
+
+		if (scriptLanguage == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(scriptLanguage);
+		}
+
+		if (scriptRequiredContexts == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(scriptRequiredContexts);
+		}
+
+		objectOutput.writeInt(priority);
 	}
 
 	public long kaleoActionId;
@@ -179,5 +291,6 @@ public class KaleoActionCacheModel implements CacheModel<KaleoAction>,
 	public String executionType;
 	public String script;
 	public String scriptLanguage;
+	public String scriptRequiredContexts;
 	public int priority;
 }

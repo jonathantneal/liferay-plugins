@@ -199,27 +199,31 @@ public class EmailNotificationSender implements NotificationSender {
 			List<User> users = UserLocalServiceUtil.getRoleUsers(roleId);
 
 			for (User user : users) {
-				InternetAddress internetAddress = new InternetAddress(
-					user.getEmailAddress(), user.getFullName());
+				if (user.isActive()) {
+					InternetAddress internetAddress = new InternetAddress(
+						user.getEmailAddress(), user.getFullName());
 
-				internetAddresses.add(internetAddress);
+					internetAddresses.add(internetAddress);
+				}
 			}
 		}
 		else {
-			KaleoTaskInstanceToken kaleoTaskInstanceToken =
-				executionContext.getKaleoTaskInstanceToken();
+			KaleoInstanceToken kaleoInstanceToken =
+				executionContext.getKaleoInstanceToken();
 
 			List<UserGroupRole> userGroupRoles =
 				UserGroupRoleLocalServiceUtil.getUserGroupRolesByGroupAndRole(
-					kaleoTaskInstanceToken.getGroupId(), roleId);
+					kaleoInstanceToken.getGroupId(), roleId);
 
 			for (UserGroupRole userGroupRole : userGroupRoles) {
 				User user = userGroupRole.getUser();
 
-				InternetAddress internetAddress = new InternetAddress(
-					user.getEmailAddress(), user.getFullName());
+				if (user.isActive()) {
+					InternetAddress internetAddress = new InternetAddress(
+						user.getEmailAddress(), user.getFullName());
 
-				internetAddresses.add(internetAddress);
+					internetAddresses.add(internetAddress);
+				}
 			}
 		}
 	}
@@ -240,10 +244,12 @@ public class EmailNotificationSender implements NotificationSender {
 
 		User user = UserLocalServiceUtil.getUser(userId);
 
-		InternetAddress internetAddress = new InternetAddress(
-			user.getEmailAddress(), user.getFullName());
+		if (user.isActive()) {
+			InternetAddress internetAddress = new InternetAddress(
+				user.getEmailAddress(), user.getFullName());
 
-		internetAddresses.add(internetAddress);
+			internetAddresses.add(internetAddress);
+		}
 	}
 
 	private String _fromAddress;
