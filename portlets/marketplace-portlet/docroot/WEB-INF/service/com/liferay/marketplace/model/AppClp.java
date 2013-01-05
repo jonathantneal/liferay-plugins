@@ -18,15 +18,17 @@ import com.liferay.marketplace.service.AppLocalServiceUtil;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
-
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Ryan Park
@@ -57,6 +59,80 @@ public class AppClp extends BaseModelImpl<App> implements App {
 
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("uuid", getUuid());
+		attributes.put("appId", getAppId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("remoteAppId", getRemoteAppId());
+		attributes.put("version", getVersion());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		String uuid = (String)attributes.get("uuid");
+
+		if (uuid != null) {
+			setUuid(uuid);
+		}
+
+		Long appId = (Long)attributes.get("appId");
+
+		if (appId != null) {
+			setAppId(appId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long remoteAppId = (Long)attributes.get("remoteAppId");
+
+		if (remoteAppId != null) {
+			setRemoteAppId(remoteAppId);
+		}
+
+		String version = (String)attributes.get("version");
+
+		if (version != null) {
+			setVersion(version);
+		}
 	}
 
 	public String getUuid() {
@@ -139,6 +215,10 @@ public class AppClp extends BaseModelImpl<App> implements App {
 		_version = version;
 	}
 
+	public boolean isDownloaded() {
+		throw new UnsupportedOperationException();
+	}
+
 	public java.lang.String getFileDir() {
 		throw new UnsupportedOperationException();
 	}
@@ -147,16 +227,20 @@ public class AppClp extends BaseModelImpl<App> implements App {
 		throw new UnsupportedOperationException();
 	}
 
+	public boolean isInstalled() {
+		throw new UnsupportedOperationException();
+	}
+
 	public java.lang.String getFilePath() {
 		throw new UnsupportedOperationException();
 	}
 
-	public boolean isDownloaded() {
-		throw new UnsupportedOperationException();
+	public BaseModel<?> getAppRemoteModel() {
+		return _appRemoteModel;
 	}
 
-	public boolean isInstalled() {
-		throw new UnsupportedOperationException();
+	public void setAppRemoteModel(BaseModel<?> appRemoteModel) {
+		_appRemoteModel = appRemoteModel;
 	}
 
 	public void persist() throws SystemException {
@@ -170,7 +254,7 @@ public class AppClp extends BaseModelImpl<App> implements App {
 
 	@Override
 	public App toEscapedModel() {
-		return (App)Proxy.newProxyInstance(App.class.getClassLoader(),
+		return (App)ProxyUtil.newProxyInstance(App.class.getClassLoader(),
 			new Class[] { App.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -321,4 +405,5 @@ public class AppClp extends BaseModelImpl<App> implements App {
 	private Date _modifiedDate;
 	private long _remoteAppId;
 	private String _version;
+	private BaseModel<?> _appRemoteModel;
 }

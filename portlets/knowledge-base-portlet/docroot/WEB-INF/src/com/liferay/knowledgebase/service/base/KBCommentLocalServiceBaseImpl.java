@@ -20,6 +20,7 @@ import com.liferay.knowledgebase.model.KBComment;
 import com.liferay.knowledgebase.service.KBArticleLocalService;
 import com.liferay.knowledgebase.service.KBArticleService;
 import com.liferay.knowledgebase.service.KBCommentLocalService;
+import com.liferay.knowledgebase.service.KBCommentService;
 import com.liferay.knowledgebase.service.KBTemplateLocalService;
 import com.liferay.knowledgebase.service.KBTemplateService;
 import com.liferay.knowledgebase.service.persistence.KBArticlePersistence;
@@ -31,12 +32,14 @@ import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.model.PersistedModel;
+import com.liferay.portal.service.BaseLocalServiceImpl;
 import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
 import com.liferay.portal.service.ResourceLocalService;
 import com.liferay.portal.service.UserLocalService;
@@ -64,7 +67,7 @@ import javax.sql.DataSource;
  * @see com.liferay.knowledgebase.service.KBCommentLocalServiceUtil
  * @generated
  */
-public abstract class KBCommentLocalServiceBaseImpl
+public abstract class KBCommentLocalServiceBaseImpl extends BaseLocalServiceImpl
 	implements KBCommentLocalService, IdentifiableBean {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -84,7 +87,7 @@ public abstract class KBCommentLocalServiceBaseImpl
 		throws SystemException {
 		kbComment.setNew(true);
 
-		return kbCommentPersistence.update(kbComment, false);
+		return kbCommentPersistence.update(kbComment);
 	}
 
 	/**
@@ -124,6 +127,13 @@ public abstract class KBCommentLocalServiceBaseImpl
 		return kbCommentPersistence.remove(kbComment);
 	}
 
+	public DynamicQuery dynamicQuery() {
+		Class<?> clazz = getClass();
+
+		return DynamicQueryFactoryUtil.forClass(KBComment.class,
+			clazz.getClassLoader());
+	}
+
 	/**
 	 * Performs a dynamic query on the database and returns the matching rows.
 	 *
@@ -141,7 +151,7 @@ public abstract class KBCommentLocalServiceBaseImpl
 	 * Performs a dynamic query on the database and returns a range of the matching rows.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.knowledgebase.model.impl.KBCommentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param dynamicQuery the dynamic query
@@ -161,7 +171,7 @@ public abstract class KBCommentLocalServiceBaseImpl
 	 * Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.knowledgebase.model.impl.KBCommentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param dynamicQuery the dynamic query
@@ -230,7 +240,7 @@ public abstract class KBCommentLocalServiceBaseImpl
 	 * Returns a range of all the k b comments.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.knowledgebase.model.impl.KBCommentModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of k b comments
@@ -263,23 +273,7 @@ public abstract class KBCommentLocalServiceBaseImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public KBComment updateKBComment(KBComment kbComment)
 		throws SystemException {
-		return updateKBComment(kbComment, true);
-	}
-
-	/**
-	 * Updates the k b comment in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
-	 *
-	 * @param kbComment the k b comment
-	 * @param merge whether to merge the k b comment with the current session. See {@link com.liferay.portal.service.persistence.BatchSession#update(com.liferay.portal.kernel.dao.orm.Session, com.liferay.portal.model.BaseModel, boolean)} for an explanation.
-	 * @return the k b comment that was updated
-	 * @throws SystemException if a system exception occurred
-	 */
-	@Indexable(type = IndexableType.REINDEX)
-	public KBComment updateKBComment(KBComment kbComment, boolean merge)
-		throws SystemException {
-		kbComment.setNew(false);
-
-		return kbCommentPersistence.update(kbComment, merge);
+		return kbCommentPersistence.update(kbComment);
 	}
 
 	/**
@@ -355,6 +349,24 @@ public abstract class KBCommentLocalServiceBaseImpl
 	public void setKBCommentLocalService(
 		KBCommentLocalService kbCommentLocalService) {
 		this.kbCommentLocalService = kbCommentLocalService;
+	}
+
+	/**
+	 * Returns the k b comment remote service.
+	 *
+	 * @return the k b comment remote service
+	 */
+	public KBCommentService getKBCommentService() {
+		return kbCommentService;
+	}
+
+	/**
+	 * Sets the k b comment remote service.
+	 *
+	 * @param kbCommentService the k b comment remote service
+	 */
+	public void setKBCommentService(KBCommentService kbCommentService) {
+		this.kbCommentService = kbCommentService;
 	}
 
 	/**
@@ -562,6 +574,10 @@ public abstract class KBCommentLocalServiceBaseImpl
 	}
 
 	public void afterPropertiesSet() {
+		Class<?> clazz = getClass();
+
+		_classLoader = clazz.getClassLoader();
+
 		PersistedModelLocalServiceRegistryUtil.register("com.liferay.knowledgebase.model.KBComment",
 			kbCommentLocalService);
 	}
@@ -589,10 +605,24 @@ public abstract class KBCommentLocalServiceBaseImpl
 		_beanIdentifier = beanIdentifier;
 	}
 
-	protected ClassLoader getClassLoader() {
-		Class<?> clazz = getClass();
+	public Object invokeMethod(String name, String[] parameterTypes,
+		Object[] arguments) throws Throwable {
+		Thread currentThread = Thread.currentThread();
 
-		return clazz.getClassLoader();
+		ClassLoader contextClassLoader = currentThread.getContextClassLoader();
+
+		if (contextClassLoader != _classLoader) {
+			currentThread.setContextClassLoader(_classLoader);
+		}
+
+		try {
+			return _clpInvoker.invokeMethod(name, parameterTypes, arguments);
+		}
+		finally {
+			if (contextClassLoader != _classLoader) {
+				currentThread.setContextClassLoader(contextClassLoader);
+			}
+		}
 	}
 
 	protected Class<?> getModelClass() {
@@ -630,6 +660,8 @@ public abstract class KBCommentLocalServiceBaseImpl
 	protected KBArticlePersistence kbArticlePersistence;
 	@BeanReference(type = KBCommentLocalService.class)
 	protected KBCommentLocalService kbCommentLocalService;
+	@BeanReference(type = KBCommentService.class)
+	protected KBCommentService kbCommentService;
 	@BeanReference(type = KBCommentPersistence.class)
 	protected KBCommentPersistence kbCommentPersistence;
 	@BeanReference(type = KBTemplateLocalService.class)
@@ -653,4 +685,6 @@ public abstract class KBCommentLocalServiceBaseImpl
 	@BeanReference(type = SocialActivityPersistence.class)
 	protected SocialActivityPersistence socialActivityPersistence;
 	private String _beanIdentifier;
+	private ClassLoader _classLoader;
+	private KBCommentLocalServiceClpInvoker _clpInvoker = new KBCommentLocalServiceClpInvoker();
 }

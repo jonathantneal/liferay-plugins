@@ -34,6 +34,8 @@ import java.io.Serializable;
 import java.sql.Types;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The base model implementation for the SVNRevision service. Represents a row in the &quot;SC_SVNRevision&quot; database table, with each column mapped to a property of this class.
@@ -82,6 +84,7 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 			true);
 	public static long SVNREPOSITORYID_COLUMN_BITMASK = 1L;
 	public static long SVNUSERID_COLUMN_BITMASK = 2L;
+	public static long REVISIONNUMBER_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.socialcoding.model.SVNRevision"));
 
@@ -110,6 +113,59 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 
 	public String getModelClassName() {
 		return SVNRevision.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("svnRevisionId", getSvnRevisionId());
+		attributes.put("svnUserId", getSvnUserId());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("svnRepositoryId", getSvnRepositoryId());
+		attributes.put("revisionNumber", getRevisionNumber());
+		attributes.put("comments", getComments());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long svnRevisionId = (Long)attributes.get("svnRevisionId");
+
+		if (svnRevisionId != null) {
+			setSvnRevisionId(svnRevisionId);
+		}
+
+		String svnUserId = (String)attributes.get("svnUserId");
+
+		if (svnUserId != null) {
+			setSvnUserId(svnUserId);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Long svnRepositoryId = (Long)attributes.get("svnRepositoryId");
+
+		if (svnRepositoryId != null) {
+			setSvnRepositoryId(svnRepositoryId);
+		}
+
+		Long revisionNumber = (Long)attributes.get("revisionNumber");
+
+		if (revisionNumber != null) {
+			setRevisionNumber(revisionNumber);
+		}
+
+		String comments = (String)attributes.get("comments");
+
+		if (comments != null) {
+			setComments(comments);
+		}
 	}
 
 	public long getSvnRevisionId() {
@@ -199,29 +255,26 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 	}
 
 	@Override
-	public SVNRevision toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (SVNRevision)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-					SVNRevision.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			SVNRevision.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public SVNRevision toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (SVNRevision)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -402,7 +455,7 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 	}
 
 	private static ClassLoader _classLoader = SVNRevision.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			SVNRevision.class
 		};
 	private long _svnRevisionId;
@@ -414,7 +467,6 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 	private boolean _setOriginalSvnRepositoryId;
 	private long _revisionNumber;
 	private String _comments;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private SVNRevision _escapedModelProxy;
+	private SVNRevision _escapedModel;
 }

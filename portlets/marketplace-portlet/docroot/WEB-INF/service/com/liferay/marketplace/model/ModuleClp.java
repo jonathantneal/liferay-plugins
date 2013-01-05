@@ -18,12 +18,15 @@ import com.liferay.marketplace.service.ModuleLocalServiceUtil;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Ryan Park
@@ -54,6 +57,45 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("uuid", getUuid());
+		attributes.put("moduleId", getModuleId());
+		attributes.put("appId", getAppId());
+		attributes.put("contextName", getContextName());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		String uuid = (String)attributes.get("uuid");
+
+		if (uuid != null) {
+			setUuid(uuid);
+		}
+
+		Long moduleId = (Long)attributes.get("moduleId");
+
+		if (moduleId != null) {
+			setModuleId(moduleId);
+		}
+
+		Long appId = (Long)attributes.get("appId");
+
+		if (appId != null) {
+			setAppId(appId);
+		}
+
+		String contextName = (String)attributes.get("contextName");
+
+		if (contextName != null) {
+			setContextName(contextName);
+		}
 	}
 
 	public String getUuid() {
@@ -88,6 +130,14 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 		_contextName = contextName;
 	}
 
+	public BaseModel<?> getModuleRemoteModel() {
+		return _moduleRemoteModel;
+	}
+
+	public void setModuleRemoteModel(BaseModel<?> moduleRemoteModel) {
+		_moduleRemoteModel = moduleRemoteModel;
+	}
+
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			ModuleLocalServiceUtil.addModule(this);
@@ -99,7 +149,7 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 
 	@Override
 	public Module toEscapedModel() {
-		return (Module)Proxy.newProxyInstance(Module.class.getClassLoader(),
+		return (Module)ProxyUtil.newProxyInstance(Module.class.getClassLoader(),
 			new Class[] { Module.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -209,4 +259,5 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 	private long _moduleId;
 	private long _appId;
 	private String _contextName;
+	private BaseModel<?> _moduleRemoteModel;
 }

@@ -18,6 +18,7 @@
 package com.liferay.so.service.impl;
 
 import com.liferay.mail.service.MailServiceUtil;
+import com.liferay.portal.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.mail.MailMessage;
 import com.liferay.portal.kernel.notifications.ChannelHubManagerUtil;
 import com.liferay.portal.kernel.notifications.NotificationEvent;
 import com.liferay.portal.kernel.notifications.NotificationEventFactoryUtil;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
@@ -33,11 +35,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.model.Group;
-import com.liferay.portal.model.GroupConstants;
-import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.User;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.service.ServiceContext;
 import com.liferay.so.MemberRequestAlreadyUsedException;
 import com.liferay.so.MemberRequestInvalidUserException;
 import com.liferay.so.invitemembers.util.InviteMembersConstants;
@@ -51,7 +50,7 @@ import java.util.List;
 import javax.mail.internet.InternetAddress;
 
 /**
- * @author Ryan	Park
+ * @author Ryan Park
  * @author Jonathan Lee
  */
 public class MemberRequestLocalServiceImpl
@@ -60,12 +59,21 @@ public class MemberRequestLocalServiceImpl
 	public MemberRequest addMemberRequest(
 			long userId, long groupId, long receiverUserId,
 			String receiverEmailAddress, long invitedRoleId, long invitedTeamId,
-			ThemeDisplay themeDisplay)
+			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		// Member request
 
 		User user = userLocalService.getUserById(userId);
+
+		try {
+			User receiverUser = userLocalService.getUserByEmailAddress(
+				serviceContext.getCompanyId(), receiverEmailAddress);
+
+			receiverUserId = receiverUser.getUserId();
+		}
+		catch (NoSuchUserException nsue) {
+		}
 
 		Date now = new Date();
 
@@ -86,12 +94,12 @@ public class MemberRequestLocalServiceImpl
 		memberRequest.setInvitedTeamId(invitedTeamId);
 		memberRequest.setStatus(InviteMembersConstants.STATUS_PENDING);
 
-		memberRequestPersistence.update(memberRequest, false);
+		memberRequestPersistence.update(memberRequest);
 
 		// Email
 
 		try {
-			sendEmail(receiverEmailAddress, memberRequest, themeDisplay);
+			sendEmail(receiverEmailAddress, memberRequest, serviceContext);
 		}
 		catch (Exception e) {
 			throw new SystemException(e);
@@ -99,14 +107,17 @@ public class MemberRequestLocalServiceImpl
 
 		// Notifications
 
-		sendNotificationEvent(memberRequest);
+		if (receiverUserId > 0) {
+			sendNotificationEvent(memberRequest);
+		}
 
 		return memberRequest;
 	}
 
 	public void addMemberRequests(
 			long userId, long groupId, long[] receiverUserIds,
-			long invitedRoleId, long invitedTeamId, ThemeDisplay themeDisplay)
+			long invitedRoleId, long invitedTeamId,
+			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		for (long receiverUserId : receiverUserIds) {
@@ -120,13 +131,14 @@ public class MemberRequestLocalServiceImpl
 
 			addMemberRequest(
 				userId, groupId, receiverUserId, emailAddress, invitedRoleId,
-				invitedTeamId, themeDisplay);
+				invitedTeamId, serviceContext);
 		}
 	}
 
 	public void addMemberRequests(
 			long userId, long groupId, String[] emailAddresses,
-			long invitedRoleId, long invitedTeamId, ThemeDisplay themeDisplay)
+			long invitedRoleId, long invitedTeamId,
+			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		for (String emailAddress : emailAddresses) {
@@ -136,7 +148,7 @@ public class MemberRequestLocalServiceImpl
 
 			addMemberRequest(
 				userId, groupId, 0, emailAddress, invitedRoleId, invitedTeamId,
-				themeDisplay);
+				serviceContext);
 		}
 	}
 
@@ -202,7 +214,7 @@ public class MemberRequestLocalServiceImpl
 		memberRequest.setModifiedDate(new Date());
 		memberRequest.setStatus(status);
 
-		memberRequestPersistence.update(memberRequest, false);
+		memberRequestPersistence.update(memberRequest);
 
 		if (status == InviteMembersConstants.STATUS_ACCEPTED) {
 			userLocalService.addGroupUsers(
@@ -236,36 +248,61 @@ public class MemberRequestLocalServiceImpl
 		memberRequest.setModifiedDate(new Date());
 		memberRequest.setReceiverUserId(receiverUserId);
 
-		memberRequestPersistence.update(memberRequest, false);
+		memberRequestPersistence.update(memberRequest);
+
+		if (receiverUserId > 0) {
+			sendNotificationEvent(memberRequest);
+		}
 
 		return memberRequest;
 	}
 
-	protected String getCreateAccountURL(String key, ThemeDisplay themeDisplay)
-		throws Exception {
+	protected String getCreateAccountURL(
+		MemberRequest memberRequest, ServiceContext serviceContext) {
 
-		return getLoginURL(key, themeDisplay) +
-			"&p_p_id=58&_58_struts_action=%2Flogin%2Fcreate_account";
+		String createAccountURL = (String)serviceContext.getAttribute(
+			"createAccountURL");
+
+		if (Validator.isNull(createAccountURL)) {
+			createAccountURL = serviceContext.getPortalURL();
+		}
+
+		String redirectURL = getRedirectURL(serviceContext);
+
+		redirectURL = HttpUtil.addParameter(
+			redirectURL, "key", memberRequest.getKey());
+
+		createAccountURL = HttpUtil.addParameter(
+			createAccountURL, "redirect", redirectURL);
+
+		return createAccountURL;
 	}
 
-	protected String getLoginURL(String key, ThemeDisplay themeDisplay)
-		throws Exception {
+	protected String getLoginURL(ServiceContext serviceContext) {
+		String loginURL = (String)serviceContext.getAttribute("loginURL");
 
-		Group group = groupLocalService.getGroup(
-			themeDisplay.getCompanyId(), GroupConstants.GUEST);
+		if (Validator.isNull(loginURL)) {
+			loginURL = serviceContext.getPortalURL();
+		}
 
-		long plid = PortalUtil.getPlidFromPortletId(
-			group.getGroupId(), PortletKeys.LOGIN);
+		String redirectURL = getRedirectURL(serviceContext);
 
-		Layout layout = layoutLocalService.getLayout(plid);
+		return HttpUtil.addParameter(loginURL, "redirect", redirectURL);
+	}
 
-		return PortalUtil.getLayoutFullURL(layout, themeDisplay, false) +
-			"?key=" + key;
+	protected String getRedirectURL(ServiceContext serviceContext) {
+		String redirectURL = (String)serviceContext.getAttribute("redirectURL");
+
+		if (Validator.isNull(redirectURL)) {
+			redirectURL = serviceContext.getCurrentURL();
+		}
+
+		return redirectURL;
 	}
 
 	protected void sendEmail(
 			String emailAddress, MemberRequest memberRequest,
-			ThemeDisplay themeDisplay)
+			ServiceContext serviceContext)
 		throws Exception {
 
 		long companyId = memberRequest.getCompanyId();
@@ -312,17 +349,13 @@ public class MemberRequestLocalServiceImpl
 					"new_user_body.tmpl");
 		}
 
-		String createAccountURL = getCreateAccountURL(
-			memberRequest.getKey(), themeDisplay);
-		String loginURL = getLoginURL(memberRequest.getKey(), themeDisplay);
-
 		subject = StringUtil.replace(
 			subject,
 			new String[] {
 				"[$MEMBER_REQUEST_GROUP$]", "[$MEMBER_REQUEST_USER$]"
 			},
 			new String[] {
-				group.getDescriptiveName(themeDisplay.getLocale()),
+				group.getDescriptiveName(serviceContext.getLocale()),
 				user.getFullName()
 			});
 
@@ -335,9 +368,10 @@ public class MemberRequestLocalServiceImpl
 				"[$MEMBER_REQUEST_USER$]"
 			},
 			new String[] {
-				fromAddress, fromName, createAccountURL,
-				group.getDescriptiveName(themeDisplay.getLocale()), loginURL,
-				user.getFullName()
+				fromAddress, fromName,
+				getCreateAccountURL(memberRequest, serviceContext),
+				group.getDescriptiveName(serviceContext.getLocale()),
+				getLoginURL(serviceContext), user.getFullName()
 			});
 
 		InternetAddress from = new InternetAddress(fromAddress, fromName);
@@ -351,7 +385,7 @@ public class MemberRequestLocalServiceImpl
 	}
 
 	protected void sendNotificationEvent(MemberRequest memberRequest)
-		throws PortalException, SystemException {
+		throws PortalException {
 
 		JSONObject notificationEventJSONObject =
 			JSONFactoryUtil.createJSONObject();

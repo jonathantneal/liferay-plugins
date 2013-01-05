@@ -20,6 +20,7 @@ import com.liferay.knowledgebase.model.KBArticle;
 import com.liferay.knowledgebase.service.KBArticleLocalService;
 import com.liferay.knowledgebase.service.KBArticleService;
 import com.liferay.knowledgebase.service.KBCommentLocalService;
+import com.liferay.knowledgebase.service.KBCommentService;
 import com.liferay.knowledgebase.service.KBTemplateLocalService;
 import com.liferay.knowledgebase.service.KBTemplateService;
 import com.liferay.knowledgebase.service.persistence.KBArticlePersistence;
@@ -31,12 +32,14 @@ import com.liferay.portal.kernel.bean.IdentifiableBean;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.model.PersistedModel;
+import com.liferay.portal.service.BaseLocalServiceImpl;
 import com.liferay.portal.service.CompanyLocalService;
 import com.liferay.portal.service.CompanyService;
 import com.liferay.portal.service.GroupLocalService;
@@ -48,6 +51,7 @@ import com.liferay.portal.service.PortletPreferencesLocalService;
 import com.liferay.portal.service.PortletPreferencesService;
 import com.liferay.portal.service.ResourceLocalService;
 import com.liferay.portal.service.SubscriptionLocalService;
+import com.liferay.portal.service.TicketLocalService;
 import com.liferay.portal.service.UserLocalService;
 import com.liferay.portal.service.UserService;
 import com.liferay.portal.service.WorkflowInstanceLinkLocalService;
@@ -56,6 +60,7 @@ import com.liferay.portal.service.persistence.GroupPersistence;
 import com.liferay.portal.service.persistence.LayoutPersistence;
 import com.liferay.portal.service.persistence.PortletPreferencesPersistence;
 import com.liferay.portal.service.persistence.SubscriptionPersistence;
+import com.liferay.portal.service.persistence.TicketPersistence;
 import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.WorkflowInstanceLinkPersistence;
 
@@ -85,7 +90,7 @@ import javax.sql.DataSource;
  * @see com.liferay.knowledgebase.service.KBArticleLocalServiceUtil
  * @generated
  */
-public abstract class KBArticleLocalServiceBaseImpl
+public abstract class KBArticleLocalServiceBaseImpl extends BaseLocalServiceImpl
 	implements KBArticleLocalService, IdentifiableBean {
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -105,7 +110,7 @@ public abstract class KBArticleLocalServiceBaseImpl
 		throws SystemException {
 		kbArticle.setNew(true);
 
-		return kbArticlePersistence.update(kbArticle, false);
+		return kbArticlePersistence.update(kbArticle);
 	}
 
 	/**
@@ -146,6 +151,13 @@ public abstract class KBArticleLocalServiceBaseImpl
 		return kbArticlePersistence.remove(kbArticle);
 	}
 
+	public DynamicQuery dynamicQuery() {
+		Class<?> clazz = getClass();
+
+		return DynamicQueryFactoryUtil.forClass(KBArticle.class,
+			clazz.getClassLoader());
+	}
+
 	/**
 	 * Performs a dynamic query on the database and returns the matching rows.
 	 *
@@ -163,7 +175,7 @@ public abstract class KBArticleLocalServiceBaseImpl
 	 * Performs a dynamic query on the database and returns a range of the matching rows.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.knowledgebase.model.impl.KBArticleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param dynamicQuery the dynamic query
@@ -183,7 +195,7 @@ public abstract class KBArticleLocalServiceBaseImpl
 	 * Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.knowledgebase.model.impl.KBArticleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param dynamicQuery the dynamic query
@@ -252,7 +264,7 @@ public abstract class KBArticleLocalServiceBaseImpl
 	 * Returns a range of all the k b articles.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.knowledgebase.model.impl.KBArticleModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of k b articles
@@ -285,23 +297,7 @@ public abstract class KBArticleLocalServiceBaseImpl
 	@Indexable(type = IndexableType.REINDEX)
 	public KBArticle updateKBArticle(KBArticle kbArticle)
 		throws SystemException {
-		return updateKBArticle(kbArticle, true);
-	}
-
-	/**
-	 * Updates the k b article in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
-	 *
-	 * @param kbArticle the k b article
-	 * @param merge whether to merge the k b article with the current session. See {@link com.liferay.portal.service.persistence.BatchSession#update(com.liferay.portal.kernel.dao.orm.Session, com.liferay.portal.model.BaseModel, boolean)} for an explanation.
-	 * @return the k b article that was updated
-	 * @throws SystemException if a system exception occurred
-	 */
-	@Indexable(type = IndexableType.REINDEX)
-	public KBArticle updateKBArticle(KBArticle kbArticle, boolean merge)
-		throws SystemException {
-		kbArticle.setNew(false);
-
-		return kbArticlePersistence.update(kbArticle, merge);
+		return kbArticlePersistence.update(kbArticle);
 	}
 
 	/**
@@ -377,6 +373,24 @@ public abstract class KBArticleLocalServiceBaseImpl
 	public void setKBCommentLocalService(
 		KBCommentLocalService kbCommentLocalService) {
 		this.kbCommentLocalService = kbCommentLocalService;
+	}
+
+	/**
+	 * Returns the k b comment remote service.
+	 *
+	 * @return the k b comment remote service
+	 */
+	public KBCommentService getKBCommentService() {
+		return kbCommentService;
+	}
+
+	/**
+	 * Sets the k b comment remote service.
+	 *
+	 * @param kbCommentService the k b comment remote service
+	 */
+	public void setKBCommentService(KBCommentService kbCommentService) {
+		this.kbCommentService = kbCommentService;
 	}
 
 	/**
@@ -749,6 +763,42 @@ public abstract class KBArticleLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the ticket local service.
+	 *
+	 * @return the ticket local service
+	 */
+	public TicketLocalService getTicketLocalService() {
+		return ticketLocalService;
+	}
+
+	/**
+	 * Sets the ticket local service.
+	 *
+	 * @param ticketLocalService the ticket local service
+	 */
+	public void setTicketLocalService(TicketLocalService ticketLocalService) {
+		this.ticketLocalService = ticketLocalService;
+	}
+
+	/**
+	 * Returns the ticket persistence.
+	 *
+	 * @return the ticket persistence
+	 */
+	public TicketPersistence getTicketPersistence() {
+		return ticketPersistence;
+	}
+
+	/**
+	 * Sets the ticket persistence.
+	 *
+	 * @param ticketPersistence the ticket persistence
+	 */
+	public void setTicketPersistence(TicketPersistence ticketPersistence) {
+		this.ticketPersistence = ticketPersistence;
+	}
+
+	/**
 	 * Returns the user local service.
 	 *
 	 * @return the user local service
@@ -973,6 +1023,10 @@ public abstract class KBArticleLocalServiceBaseImpl
 	}
 
 	public void afterPropertiesSet() {
+		Class<?> clazz = getClass();
+
+		_classLoader = clazz.getClassLoader();
+
 		PersistedModelLocalServiceRegistryUtil.register("com.liferay.knowledgebase.model.KBArticle",
 			kbArticleLocalService);
 	}
@@ -1000,10 +1054,24 @@ public abstract class KBArticleLocalServiceBaseImpl
 		_beanIdentifier = beanIdentifier;
 	}
 
-	protected ClassLoader getClassLoader() {
-		Class<?> clazz = getClass();
+	public Object invokeMethod(String name, String[] parameterTypes,
+		Object[] arguments) throws Throwable {
+		Thread currentThread = Thread.currentThread();
 
-		return clazz.getClassLoader();
+		ClassLoader contextClassLoader = currentThread.getContextClassLoader();
+
+		if (contextClassLoader != _classLoader) {
+			currentThread.setContextClassLoader(_classLoader);
+		}
+
+		try {
+			return _clpInvoker.invokeMethod(name, parameterTypes, arguments);
+		}
+		finally {
+			if (contextClassLoader != _classLoader) {
+				currentThread.setContextClassLoader(contextClassLoader);
+			}
+		}
 	}
 
 	protected Class<?> getModelClass() {
@@ -1041,6 +1109,8 @@ public abstract class KBArticleLocalServiceBaseImpl
 	protected KBArticlePersistence kbArticlePersistence;
 	@BeanReference(type = KBCommentLocalService.class)
 	protected KBCommentLocalService kbCommentLocalService;
+	@BeanReference(type = KBCommentService.class)
+	protected KBCommentService kbCommentService;
 	@BeanReference(type = KBCommentPersistence.class)
 	protected KBCommentPersistence kbCommentPersistence;
 	@BeanReference(type = KBTemplateLocalService.class)
@@ -1081,6 +1151,10 @@ public abstract class KBArticleLocalServiceBaseImpl
 	protected SubscriptionLocalService subscriptionLocalService;
 	@BeanReference(type = SubscriptionPersistence.class)
 	protected SubscriptionPersistence subscriptionPersistence;
+	@BeanReference(type = TicketLocalService.class)
+	protected TicketLocalService ticketLocalService;
+	@BeanReference(type = TicketPersistence.class)
+	protected TicketPersistence ticketPersistence;
 	@BeanReference(type = UserLocalService.class)
 	protected UserLocalService userLocalService;
 	@BeanReference(type = UserService.class)
@@ -1106,4 +1180,6 @@ public abstract class KBArticleLocalServiceBaseImpl
 	@BeanReference(type = SocialActivityPersistence.class)
 	protected SocialActivityPersistence socialActivityPersistence;
 	private String _beanIdentifier;
+	private ClassLoader _classLoader;
+	private KBArticleLocalServiceClpInvoker _clpInvoker = new KBArticleLocalServiceClpInvoker();
 }

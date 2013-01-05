@@ -16,16 +16,18 @@ package com.liferay.socialcoding.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
 import com.liferay.socialcoding.service.SVNRevisionLocalServiceUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
-
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Brian Wing Shun Chan
@@ -57,6 +59,59 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("svnRevisionId", getSvnRevisionId());
+		attributes.put("svnUserId", getSvnUserId());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("svnRepositoryId", getSvnRepositoryId());
+		attributes.put("revisionNumber", getRevisionNumber());
+		attributes.put("comments", getComments());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long svnRevisionId = (Long)attributes.get("svnRevisionId");
+
+		if (svnRevisionId != null) {
+			setSvnRevisionId(svnRevisionId);
+		}
+
+		String svnUserId = (String)attributes.get("svnUserId");
+
+		if (svnUserId != null) {
+			setSvnUserId(svnUserId);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Long svnRepositoryId = (Long)attributes.get("svnRepositoryId");
+
+		if (svnRepositoryId != null) {
+			setSvnRepositoryId(svnRepositoryId);
+		}
+
+		Long revisionNumber = (Long)attributes.get("revisionNumber");
+
+		if (revisionNumber != null) {
+			setRevisionNumber(revisionNumber);
+		}
+
+		String comments = (String)attributes.get("comments");
+
+		if (comments != null) {
+			setComments(comments);
+		}
 	}
 
 	public long getSvnRevisionId() {
@@ -111,12 +166,20 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 		throw new UnsupportedOperationException();
 	}
 
+	public java.lang.String getWebRevisionNumberURL() {
+		throw new UnsupportedOperationException();
+	}
+
 	public com.liferay.socialcoding.model.SVNRepository getSVNRepository() {
 		throw new UnsupportedOperationException();
 	}
 
-	public java.lang.String getWebRevisionNumberURL() {
-		throw new UnsupportedOperationException();
+	public BaseModel<?> getSVNRevisionRemoteModel() {
+		return _svnRevisionRemoteModel;
+	}
+
+	public void setSVNRevisionRemoteModel(BaseModel<?> svnRevisionRemoteModel) {
+		_svnRevisionRemoteModel = svnRevisionRemoteModel;
 	}
 
 	public void persist() throws SystemException {
@@ -130,7 +193,7 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 
 	@Override
 	public SVNRevision toEscapedModel() {
-		return (SVNRevision)Proxy.newProxyInstance(SVNRevision.class.getClassLoader(),
+		return (SVNRevision)ProxyUtil.newProxyInstance(SVNRevision.class.getClassLoader(),
 			new Class[] { SVNRevision.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -264,4 +327,5 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 	private long _svnRepositoryId;
 	private long _revisionNumber;
 	private String _comments;
+	private BaseModel<?> _svnRevisionRemoteModel;
 }

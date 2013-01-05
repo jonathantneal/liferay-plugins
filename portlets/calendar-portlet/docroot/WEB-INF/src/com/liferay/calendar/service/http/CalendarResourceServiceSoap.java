@@ -52,9 +52,8 @@ import java.util.Map;
  * </p>
  *
  * <p>
- * You can see a list of services at
- * http://localhost:8080/api/secure/axis. Set the property
- * <b>axis.servlet.hosts.allowed</b> in portal.properties to configure
+ * You can see a list of services at http://localhost:8080/api/axis. Set the
+ * property <b>axis.servlet.hosts.allowed</b> in portal.properties to configure
  * security.
  * </p>
  *
@@ -70,12 +69,13 @@ import java.util.Map;
  */
 public class CalendarResourceServiceSoap {
 	public static com.liferay.calendar.model.CalendarResourceSoap addCalendarResource(
-		java.lang.String className, long classPK,
+		long groupId, java.lang.String className, long classPK,
+		java.lang.String classUuid, java.lang.String code,
 		java.lang.String[] nameMapLanguageIds,
 		java.lang.String[] nameMapValues,
 		java.lang.String[] descriptionMapLanguageIds,
-		java.lang.String[] descriptionMapValues, boolean active,
-		com.liferay.portal.service.ServiceContext serviceContext)
+		java.lang.String[] descriptionMapValues, java.lang.String type,
+		boolean active, com.liferay.portal.service.ServiceContext serviceContext)
 		throws RemoteException {
 		try {
 			Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(nameMapLanguageIds,
@@ -83,8 +83,9 @@ public class CalendarResourceServiceSoap {
 			Map<Locale, String> descriptionMap = LocalizationUtil.getLocalizationMap(descriptionMapLanguageIds,
 					descriptionMapValues);
 
-			com.liferay.calendar.model.CalendarResource returnValue = CalendarResourceServiceUtil.addCalendarResource(className,
-					classPK, nameMap, descriptionMap, active, serviceContext);
+			com.liferay.calendar.model.CalendarResource returnValue = CalendarResourceServiceUtil.addCalendarResource(groupId,
+					className, classPK, classUuid, code, nameMap,
+					descriptionMap, type, active, serviceContext);
 
 			return com.liferay.calendar.model.CalendarResourceSoap.toSoapModel(returnValue);
 		}
@@ -109,6 +110,21 @@ public class CalendarResourceServiceSoap {
 		}
 	}
 
+	public static com.liferay.calendar.model.CalendarResourceSoap fetchCalendarResource(
+		long classNameId, long classPK) throws RemoteException {
+		try {
+			com.liferay.calendar.model.CalendarResource returnValue = CalendarResourceServiceUtil.fetchCalendarResource(classNameId,
+					classPK);
+
+			return com.liferay.calendar.model.CalendarResourceSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
 	public static com.liferay.calendar.model.CalendarResourceSoap getCalendarResource(
 		long calendarResourceId) throws RemoteException {
 		try {
@@ -123,29 +139,17 @@ public class CalendarResourceServiceSoap {
 		}
 	}
 
-	public static com.liferay.calendar.model.CalendarResourceSoap getCalendarResource(
-		java.lang.String className, long classPK) throws RemoteException {
-		try {
-			com.liferay.calendar.model.CalendarResource returnValue = CalendarResourceServiceUtil.getCalendarResource(className,
-					classPK);
-
-			return com.liferay.calendar.model.CalendarResourceSoap.toSoapModel(returnValue);
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	public static com.liferay.calendar.model.CalendarResourceSoap[] getGroupCalendarResources(
-		long groupId, boolean active, int start, int end,
+	public static com.liferay.calendar.model.CalendarResourceSoap[] search(
+		long companyId, long[] groupIds, long[] classNameIds,
+		java.lang.String keywords, boolean active, boolean andOperator,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
 		throws RemoteException {
 		try {
 			java.util.List<com.liferay.calendar.model.CalendarResource> returnValue =
-				CalendarResourceServiceUtil.getGroupCalendarResources(groupId,
-					active, start, end, orderByComparator);
+				CalendarResourceServiceUtil.search(companyId, groupIds,
+					classNameIds, keywords, active, andOperator, start, end,
+					orderByComparator);
 
 			return com.liferay.calendar.model.CalendarResourceSoap.toSoapModels(returnValue);
 		}
@@ -156,15 +160,18 @@ public class CalendarResourceServiceSoap {
 		}
 	}
 
-	public static com.liferay.calendar.model.CalendarResourceSoap[] getGroupCalendarResources(
-		long groupId, java.lang.String name, boolean active, int start,
-		int end,
+	public static com.liferay.calendar.model.CalendarResourceSoap[] search(
+		long companyId, long[] groupIds, long[] classNameIds,
+		java.lang.String code, java.lang.String name,
+		java.lang.String description, java.lang.String type, boolean active,
+		boolean andOperator, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
 		throws RemoteException {
 		try {
 			java.util.List<com.liferay.calendar.model.CalendarResource> returnValue =
-				CalendarResourceServiceUtil.getGroupCalendarResources(groupId,
-					name, active, start, end, orderByComparator);
+				CalendarResourceServiceUtil.search(companyId, groupIds,
+					classNameIds, code, name, description, type, active,
+					andOperator, start, end, orderByComparator);
 
 			return com.liferay.calendar.model.CalendarResourceSoap.toSoapModels(returnValue);
 		}
@@ -175,11 +182,12 @@ public class CalendarResourceServiceSoap {
 		}
 	}
 
-	public static int getGroupCalendarResourcesCount(long groupId,
-		boolean active) throws RemoteException {
+	public static int searchCount(long companyId, long[] groupIds,
+		long[] classNameIds, java.lang.String keywords, boolean active)
+		throws RemoteException {
 		try {
-			int returnValue = CalendarResourceServiceUtil.getGroupCalendarResourcesCount(groupId,
-					active);
+			int returnValue = CalendarResourceServiceUtil.searchCount(companyId,
+					groupIds, classNameIds, keywords, active);
 
 			return returnValue;
 		}
@@ -190,13 +198,14 @@ public class CalendarResourceServiceSoap {
 		}
 	}
 
-	public static int getGroupCalendarResourcesCount(long groupId,
-		java.lang.String name, boolean active, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws RemoteException {
+	public static int searchCount(long companyId, long[] groupIds,
+		long[] classNameIds, java.lang.String code, java.lang.String name,
+		java.lang.String description, java.lang.String type, boolean active,
+		boolean andOperator) throws RemoteException {
 		try {
-			int returnValue = CalendarResourceServiceUtil.getGroupCalendarResourcesCount(groupId,
-					name, active, start, end, orderByComparator);
+			int returnValue = CalendarResourceServiceUtil.searchCount(companyId,
+					groupIds, classNameIds, code, name, description, type,
+					active, andOperator);
 
 			return returnValue;
 		}
@@ -211,8 +220,8 @@ public class CalendarResourceServiceSoap {
 		long calendarResourceId, java.lang.String[] nameMapLanguageIds,
 		java.lang.String[] nameMapValues,
 		java.lang.String[] descriptionMapLanguageIds,
-		java.lang.String[] descriptionMapValues, boolean active,
-		com.liferay.portal.service.ServiceContext serviceContext)
+		java.lang.String[] descriptionMapValues, java.lang.String type,
+		boolean active, com.liferay.portal.service.ServiceContext serviceContext)
 		throws RemoteException {
 		try {
 			Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(nameMapLanguageIds,
@@ -221,7 +230,7 @@ public class CalendarResourceServiceSoap {
 					descriptionMapValues);
 
 			com.liferay.calendar.model.CalendarResource returnValue = CalendarResourceServiceUtil.updateCalendarResource(calendarResourceId,
-					nameMap, descriptionMap, active, serviceContext);
+					nameMap, descriptionMap, type, active, serviceContext);
 
 			return com.liferay.calendar.model.CalendarResourceSoap.toSoapModel(returnValue);
 		}

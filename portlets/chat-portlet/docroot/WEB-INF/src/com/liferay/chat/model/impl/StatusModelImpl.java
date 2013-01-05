@@ -35,6 +35,9 @@ import java.io.Serializable;
 
 import java.sql.Types;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The base model implementation for the Status service. Represents a row in the &quot;Chat_Status&quot; database table, with each column mapped to a property of this class.
  *
@@ -68,6 +71,8 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		};
 	public static final String TABLE_SQL_CREATE = "create table Chat_Status (statusId LONG not null primary key,userId LONG,modifiedDate LONG,online_ BOOLEAN,awake BOOLEAN,activePanelId VARCHAR(75) null,message STRING null,playSound BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table Chat_Status";
+	public static final String ORDER_BY_JPQL = " ORDER BY status.statusId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY Chat_Status.statusId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -83,6 +88,7 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 	public static long MODIFIEDDATE_COLUMN_BITMASK = 1L;
 	public static long ONLINE_COLUMN_BITMASK = 2L;
 	public static long USERID_COLUMN_BITMASK = 4L;
+	public static long STATUSID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.chat.model.Status"));
 
@@ -111,6 +117,73 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 
 	public String getModelClassName() {
 		return Status.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("statusId", getStatusId());
+		attributes.put("userId", getUserId());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("online", getOnline());
+		attributes.put("awake", getAwake());
+		attributes.put("activePanelId", getActivePanelId());
+		attributes.put("message", getMessage());
+		attributes.put("playSound", getPlaySound());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long statusId = (Long)attributes.get("statusId");
+
+		if (statusId != null) {
+			setStatusId(statusId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		Long modifiedDate = (Long)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Boolean online = (Boolean)attributes.get("online");
+
+		if (online != null) {
+			setOnline(online);
+		}
+
+		Boolean awake = (Boolean)attributes.get("awake");
+
+		if (awake != null) {
+			setAwake(awake);
+		}
+
+		String activePanelId = (String)attributes.get("activePanelId");
+
+		if (activePanelId != null) {
+			setActivePanelId(activePanelId);
+		}
+
+		String message = (String)attributes.get("message");
+
+		if (message != null) {
+			setMessage(message);
+		}
+
+		Boolean playSound = (Boolean)attributes.get("playSound");
+
+		if (playSound != null) {
+			setPlaySound(playSound);
+		}
 	}
 
 	public long getStatusId() {
@@ -248,29 +321,26 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 	}
 
 	@Override
-	public Status toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Status)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-					Status.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			Status.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Status toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Status)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -460,9 +530,7 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 	}
 
 	private static ClassLoader _classLoader = Status.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			Status.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { Status.class };
 	private long _statusId;
 	private long _userId;
 	private String _userUuid;
@@ -478,7 +546,6 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 	private String _activePanelId;
 	private String _message;
 	private boolean _playSound;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private Status _escapedModelProxy;
+	private Status _escapedModel;
 }

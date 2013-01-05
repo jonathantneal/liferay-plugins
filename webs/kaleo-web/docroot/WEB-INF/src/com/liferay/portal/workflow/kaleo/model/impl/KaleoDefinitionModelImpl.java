@@ -14,6 +14,7 @@
 
 package com.liferay.portal.workflow.kaleo.model.impl;
 
+import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSON;
@@ -41,6 +42,7 @@ import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -111,6 +113,10 @@ public class KaleoDefinitionModelImpl extends BaseModelImpl<KaleoDefinition>
 	 * @return the normal model instance
 	 */
 	public static KaleoDefinition toModel(KaleoDefinitionSoap soapModel) {
+		if (soapModel == null) {
+			return null;
+		}
+
 		KaleoDefinition model = new KaleoDefinitionImpl();
 
 		model.setKaleoDefinitionId(soapModel.getKaleoDefinitionId());
@@ -139,6 +145,10 @@ public class KaleoDefinitionModelImpl extends BaseModelImpl<KaleoDefinition>
 	 */
 	public static List<KaleoDefinition> toModels(
 		KaleoDefinitionSoap[] soapModels) {
+		if (soapModels == null) {
+			return null;
+		}
+
 		List<KaleoDefinition> models = new ArrayList<KaleoDefinition>(soapModels.length);
 
 		for (KaleoDefinitionSoap soapModel : soapModels) {
@@ -176,6 +186,115 @@ public class KaleoDefinitionModelImpl extends BaseModelImpl<KaleoDefinition>
 
 	public String getModelClassName() {
 		return KaleoDefinition.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("kaleoDefinitionId", getKaleoDefinitionId());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("name", getName());
+		attributes.put("title", getTitle());
+		attributes.put("description", getDescription());
+		attributes.put("content", getContent());
+		attributes.put("version", getVersion());
+		attributes.put("active", getActive());
+		attributes.put("startKaleoNodeId", getStartKaleoNodeId());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long kaleoDefinitionId = (Long)attributes.get("kaleoDefinitionId");
+
+		if (kaleoDefinitionId != null) {
+			setKaleoDefinitionId(kaleoDefinitionId);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		String name = (String)attributes.get("name");
+
+		if (name != null) {
+			setName(name);
+		}
+
+		String title = (String)attributes.get("title");
+
+		if (title != null) {
+			setTitle(title);
+		}
+
+		String description = (String)attributes.get("description");
+
+		if (description != null) {
+			setDescription(description);
+		}
+
+		String content = (String)attributes.get("content");
+
+		if (content != null) {
+			setContent(content);
+		}
+
+		Integer version = (Integer)attributes.get("version");
+
+		if (version != null) {
+			setVersion(version);
+		}
+
+		Boolean active = (Boolean)attributes.get("active");
+
+		if (active != null) {
+			setActive(active);
+		}
+
+		Long startKaleoNodeId = (Long)attributes.get("startKaleoNodeId");
+
+		if (startKaleoNodeId != null) {
+			setStartKaleoNodeId(startKaleoNodeId);
+		}
 	}
 
 	@JSON
@@ -463,29 +582,33 @@ public class KaleoDefinitionModelImpl extends BaseModelImpl<KaleoDefinition>
 	}
 
 	@Override
-	public KaleoDefinition toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (KaleoDefinition)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					KaleoDefinition.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			KaleoDefinition.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@SuppressWarnings("unused")
+	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
+		throws LocaleException {
+		setTitle(getTitle(defaultImportLocale), defaultImportLocale,
+			defaultImportLocale);
+	}
+
+	@Override
+	public KaleoDefinition toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (KaleoDefinition)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -771,7 +894,7 @@ public class KaleoDefinitionModelImpl extends BaseModelImpl<KaleoDefinition>
 	}
 
 	private static ClassLoader _classLoader = KaleoDefinition.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			KaleoDefinition.class
 		};
 	private long _kaleoDefinitionId;
@@ -797,7 +920,6 @@ public class KaleoDefinitionModelImpl extends BaseModelImpl<KaleoDefinition>
 	private boolean _originalActive;
 	private boolean _setOriginalActive;
 	private long _startKaleoNodeId;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private KaleoDefinition _escapedModelProxy;
+	private KaleoDefinition _escapedModel;
 }

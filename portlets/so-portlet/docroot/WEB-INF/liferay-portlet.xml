@@ -15,11 +15,9 @@
 		<header-portlet-css>/invite_members/css/main.css</header-portlet-css>
 		<header-portlet-javascript>/invite_members/js/main.js</header-portlet-javascript>
 		<css-class-wrapper>so-portlet-invite-members</css-class-wrapper>
-		<system>true</system>
 	</portlet>
 	<portlet>
 		<portlet-name>4</portlet-name>
-		<footer-portal-javascript>/html/js/liferay/service.js</footer-portal-javascript>
 		<system>true</system>
 	</portlet>
 	<portlet>
@@ -29,7 +27,6 @@
 		<preferences-owned-by-group>true</preferences-owned-by-group>
 		<header-portlet-css>/sites/css/main.css</header-portlet-css>
 		<header-portlet-javascript>/sites/js/main.js</header-portlet-javascript>
-		<footer-portal-javascript>/html/js/liferay/service.js</footer-portal-javascript>
 		<css-class-wrapper>so-portlet-sites</css-class-wrapper>
 		<add-default-resource>true</add-default-resource>
 	</portlet>

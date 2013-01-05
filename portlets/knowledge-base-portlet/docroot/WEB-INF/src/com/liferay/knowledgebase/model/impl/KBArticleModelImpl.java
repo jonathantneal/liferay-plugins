@@ -41,7 +41,9 @@ import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The base model implementation for the KBArticle service. Represents a row in the &quot;KBArticle&quot; database table, with each column mapped to a property of this class.
@@ -117,6 +119,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	public static long STATUS_COLUMN_BITMASK = 128L;
 	public static long UUID_COLUMN_BITMASK = 256L;
 	public static long VERSION_COLUMN_BITMASK = 512L;
+	public static long MODIFIEDDATE_COLUMN_BITMASK = 1024L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -125,6 +128,10 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	 * @return the normal model instance
 	 */
 	public static KBArticle toModel(KBArticleSoap soapModel) {
+		if (soapModel == null) {
+			return null;
+		}
+
 		KBArticle model = new KBArticleImpl();
 
 		model.setUuid(soapModel.getUuid());
@@ -162,6 +169,10 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	 * @return the normal model instances
 	 */
 	public static List<KBArticle> toModels(KBArticleSoap[] soapModels) {
+		if (soapModels == null) {
+			return null;
+		}
+
 		List<KBArticle> models = new ArrayList<KBArticle>(soapModels.length);
 
 		for (KBArticleSoap soapModel : soapModels) {
@@ -199,6 +210,186 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	public String getModelClassName() {
 		return KBArticle.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("uuid", getUuid());
+		attributes.put("kbArticleId", getKbArticleId());
+		attributes.put("resourcePrimKey", getResourcePrimKey());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("rootResourcePrimKey", getRootResourcePrimKey());
+		attributes.put("parentResourcePrimKey", getParentResourcePrimKey());
+		attributes.put("version", getVersion());
+		attributes.put("title", getTitle());
+		attributes.put("content", getContent());
+		attributes.put("description", getDescription());
+		attributes.put("priority", getPriority());
+		attributes.put("sections", getSections());
+		attributes.put("viewCount", getViewCount());
+		attributes.put("latest", getLatest());
+		attributes.put("main", getMain());
+		attributes.put("status", getStatus());
+		attributes.put("statusByUserId", getStatusByUserId());
+		attributes.put("statusByUserName", getStatusByUserName());
+		attributes.put("statusDate", getStatusDate());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		String uuid = (String)attributes.get("uuid");
+
+		if (uuid != null) {
+			setUuid(uuid);
+		}
+
+		Long kbArticleId = (Long)attributes.get("kbArticleId");
+
+		if (kbArticleId != null) {
+			setKbArticleId(kbArticleId);
+		}
+
+		Long resourcePrimKey = (Long)attributes.get("resourcePrimKey");
+
+		if (resourcePrimKey != null) {
+			setResourcePrimKey(resourcePrimKey);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long rootResourcePrimKey = (Long)attributes.get("rootResourcePrimKey");
+
+		if (rootResourcePrimKey != null) {
+			setRootResourcePrimKey(rootResourcePrimKey);
+		}
+
+		Long parentResourcePrimKey = (Long)attributes.get(
+				"parentResourcePrimKey");
+
+		if (parentResourcePrimKey != null) {
+			setParentResourcePrimKey(parentResourcePrimKey);
+		}
+
+		Integer version = (Integer)attributes.get("version");
+
+		if (version != null) {
+			setVersion(version);
+		}
+
+		String title = (String)attributes.get("title");
+
+		if (title != null) {
+			setTitle(title);
+		}
+
+		String content = (String)attributes.get("content");
+
+		if (content != null) {
+			setContent(content);
+		}
+
+		String description = (String)attributes.get("description");
+
+		if (description != null) {
+			setDescription(description);
+		}
+
+		Double priority = (Double)attributes.get("priority");
+
+		if (priority != null) {
+			setPriority(priority);
+		}
+
+		String sections = (String)attributes.get("sections");
+
+		if (sections != null) {
+			setSections(sections);
+		}
+
+		Integer viewCount = (Integer)attributes.get("viewCount");
+
+		if (viewCount != null) {
+			setViewCount(viewCount);
+		}
+
+		Boolean latest = (Boolean)attributes.get("latest");
+
+		if (latest != null) {
+			setLatest(latest);
+		}
+
+		Boolean main = (Boolean)attributes.get("main");
+
+		if (main != null) {
+			setMain(main);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
+		}
+
+		Long statusByUserId = (Long)attributes.get("statusByUserId");
+
+		if (statusByUserId != null) {
+			setStatusByUserId(statusByUserId);
+		}
+
+		String statusByUserName = (String)attributes.get("statusByUserName");
+
+		if (statusByUserName != null) {
+			setStatusByUserName(statusByUserName);
+		}
+
+		Date statusDate = (Date)attributes.get("statusDate");
+
+		if (statusDate != null) {
+			setStatusDate(statusDate);
+		}
 	}
 
 	@JSON
@@ -613,9 +804,17 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		}
 	}
 
+	public boolean isDenied() {
+		if (getStatus() == WorkflowConstants.STATUS_DENIED) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	public boolean isDraft() {
-		if ((getStatus() == WorkflowConstants.STATUS_DRAFT) ||
-				(getStatus() == WorkflowConstants.STATUS_DRAFT_FROM_APPROVED)) {
+		if (getStatus() == WorkflowConstants.STATUS_DRAFT) {
 			return true;
 		}
 		else {
@@ -632,8 +831,44 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 		}
 	}
 
+	public boolean isInactive() {
+		if (getStatus() == WorkflowConstants.STATUS_INACTIVE) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public boolean isIncomplete() {
+		if (getStatus() == WorkflowConstants.STATUS_INCOMPLETE) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public boolean isInTrash() {
+		if (getStatus() == WorkflowConstants.STATUS_IN_TRASH) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	public boolean isPending() {
 		if (getStatus() == WorkflowConstants.STATUS_PENDING) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public boolean isScheduled() {
+		if (getStatus() == WorkflowConstants.STATUS_SCHEDULED) {
 			return true;
 		}
 		else {
@@ -646,29 +881,26 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	}
 
 	@Override
-	public KBArticle toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (KBArticle)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					KBArticle.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			KBArticle.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public KBArticle toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (KBArticle)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -1078,7 +1310,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	}
 
 	private static ClassLoader _classLoader = KBArticle.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			KBArticle.class
 		};
 	private String _uuid;
@@ -1125,7 +1357,6 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 	private String _statusByUserUuid;
 	private String _statusByUserName;
 	private Date _statusDate;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private KBArticle _escapedModelProxy;
+	private KBArticle _escapedModel;
 }

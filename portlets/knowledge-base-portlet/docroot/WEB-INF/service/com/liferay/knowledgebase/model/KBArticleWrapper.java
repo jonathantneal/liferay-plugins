@@ -16,6 +16,10 @@ package com.liferay.knowledgebase.model;
 
 import com.liferay.portal.model.ModelWrapper;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * <p>
  * This class is a wrapper for {@link KBArticle}.
@@ -36,6 +40,184 @@ public class KBArticleWrapper implements KBArticle, ModelWrapper<KBArticle> {
 
 	public String getModelClassName() {
 		return KBArticle.class.getName();
+	}
+
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("uuid", getUuid());
+		attributes.put("kbArticleId", getKbArticleId());
+		attributes.put("resourcePrimKey", getResourcePrimKey());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("rootResourcePrimKey", getRootResourcePrimKey());
+		attributes.put("parentResourcePrimKey", getParentResourcePrimKey());
+		attributes.put("version", getVersion());
+		attributes.put("title", getTitle());
+		attributes.put("content", getContent());
+		attributes.put("description", getDescription());
+		attributes.put("priority", getPriority());
+		attributes.put("sections", getSections());
+		attributes.put("viewCount", getViewCount());
+		attributes.put("latest", getLatest());
+		attributes.put("main", getMain());
+		attributes.put("status", getStatus());
+		attributes.put("statusByUserId", getStatusByUserId());
+		attributes.put("statusByUserName", getStatusByUserName());
+		attributes.put("statusDate", getStatusDate());
+
+		return attributes;
+	}
+
+	public void setModelAttributes(Map<String, Object> attributes) {
+		String uuid = (String)attributes.get("uuid");
+
+		if (uuid != null) {
+			setUuid(uuid);
+		}
+
+		Long kbArticleId = (Long)attributes.get("kbArticleId");
+
+		if (kbArticleId != null) {
+			setKbArticleId(kbArticleId);
+		}
+
+		Long resourcePrimKey = (Long)attributes.get("resourcePrimKey");
+
+		if (resourcePrimKey != null) {
+			setResourcePrimKey(resourcePrimKey);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long rootResourcePrimKey = (Long)attributes.get("rootResourcePrimKey");
+
+		if (rootResourcePrimKey != null) {
+			setRootResourcePrimKey(rootResourcePrimKey);
+		}
+
+		Long parentResourcePrimKey = (Long)attributes.get(
+				"parentResourcePrimKey");
+
+		if (parentResourcePrimKey != null) {
+			setParentResourcePrimKey(parentResourcePrimKey);
+		}
+
+		Integer version = (Integer)attributes.get("version");
+
+		if (version != null) {
+			setVersion(version);
+		}
+
+		String title = (String)attributes.get("title");
+
+		if (title != null) {
+			setTitle(title);
+		}
+
+		String content = (String)attributes.get("content");
+
+		if (content != null) {
+			setContent(content);
+		}
+
+		String description = (String)attributes.get("description");
+
+		if (description != null) {
+			setDescription(description);
+		}
+
+		Double priority = (Double)attributes.get("priority");
+
+		if (priority != null) {
+			setPriority(priority);
+		}
+
+		String sections = (String)attributes.get("sections");
+
+		if (sections != null) {
+			setSections(sections);
+		}
+
+		Integer viewCount = (Integer)attributes.get("viewCount");
+
+		if (viewCount != null) {
+			setViewCount(viewCount);
+		}
+
+		Boolean latest = (Boolean)attributes.get("latest");
+
+		if (latest != null) {
+			setLatest(latest);
+		}
+
+		Boolean main = (Boolean)attributes.get("main");
+
+		if (main != null) {
+			setMain(main);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
+		}
+
+		Long statusByUserId = (Long)attributes.get("statusByUserId");
+
+		if (statusByUserId != null) {
+			setStatusByUserId(statusByUserId);
+		}
+
+		String statusByUserName = (String)attributes.get("statusByUserName");
+
+		if (statusByUserName != null) {
+			setStatusByUserName(statusByUserName);
+		}
+
+		Date statusDate = (Date)attributes.get("statusDate");
+
+		if (statusDate != null) {
+			setStatusDate(statusDate);
+		}
 	}
 
 	/**
@@ -567,6 +749,15 @@ public class KBArticleWrapper implements KBArticle, ModelWrapper<KBArticle> {
 	}
 
 	/**
+	* Returns <code>true</code> if this k b article is denied.
+	*
+	* @return <code>true</code> if this k b article is denied; <code>false</code> otherwise
+	*/
+	public boolean isDenied() {
+		return _kbArticle.isDenied();
+	}
+
+	/**
 	* Returns <code>true</code> if this k b article is a draft.
 	*
 	* @return <code>true</code> if this k b article is a draft; <code>false</code> otherwise
@@ -585,12 +776,48 @@ public class KBArticleWrapper implements KBArticle, ModelWrapper<KBArticle> {
 	}
 
 	/**
+	* Returns <code>true</code> if this k b article is inactive.
+	*
+	* @return <code>true</code> if this k b article is inactive; <code>false</code> otherwise
+	*/
+	public boolean isInactive() {
+		return _kbArticle.isInactive();
+	}
+
+	/**
+	* Returns <code>true</code> if this k b article is incomplete.
+	*
+	* @return <code>true</code> if this k b article is incomplete; <code>false</code> otherwise
+	*/
+	public boolean isIncomplete() {
+		return _kbArticle.isIncomplete();
+	}
+
+	/**
+	* Returns <code>true</code> if this k b article is in the Recycle Bin.
+	*
+	* @return <code>true</code> if this k b article is in the Recycle Bin; <code>false</code> otherwise
+	*/
+	public boolean isInTrash() {
+		return _kbArticle.isInTrash();
+	}
+
+	/**
 	* Returns <code>true</code> if this k b article is pending.
 	*
 	* @return <code>true</code> if this k b article is pending; <code>false</code> otherwise
 	*/
 	public boolean isPending() {
 		return _kbArticle.isPending();
+	}
+
+	/**
+	* Returns <code>true</code> if this k b article is scheduled.
+	*
+	* @return <code>true</code> if this k b article is scheduled; <code>false</code> otherwise
+	*/
+	public boolean isScheduled() {
+		return _kbArticle.isScheduled();
 	}
 
 	public boolean isNew() {
@@ -652,6 +879,10 @@ public class KBArticleWrapper implements KBArticle, ModelWrapper<KBArticle> {
 		return new KBArticleWrapper(_kbArticle.toEscapedModel());
 	}
 
+	public com.liferay.knowledgebase.model.KBArticle toUnescapedModel() {
+		return new KBArticleWrapper(_kbArticle.toUnescapedModel());
+	}
+
 	@Override
 	public java.lang.String toString() {
 		return _kbArticle.toString();
@@ -670,10 +901,22 @@ public class KBArticleWrapper implements KBArticle, ModelWrapper<KBArticle> {
 		return _kbArticle.getAttachmentsDirName();
 	}
 
+	public java.util.List<com.liferay.portal.kernel.repository.model.FileEntry> getAttachmentsFileEntries()
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _kbArticle.getAttachmentsFileEntries();
+	}
+
 	public java.lang.String[] getAttachmentsFileNames()
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _kbArticle.getAttachmentsFileNames();
+	}
+
+	public long getAttachmentsFolderId()
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _kbArticle.getAttachmentsFolderId();
 	}
 
 	public long getClassPK() {

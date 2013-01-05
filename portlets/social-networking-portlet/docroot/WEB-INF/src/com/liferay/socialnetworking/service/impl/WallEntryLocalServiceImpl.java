@@ -17,10 +17,11 @@ package com.liferay.socialnetworking.service.impl;
 import com.liferay.mail.service.MailServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.mail.MailMessage;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
@@ -65,7 +66,7 @@ public class WallEntryLocalServiceImpl extends WallEntryLocalServiceBaseImpl {
 		wallEntry.setModifiedDate(now);
 		wallEntry.setComments(comments);
 
-		wallEntryPersistence.update(wallEntry, false);
+		wallEntryPersistence.update(wallEntry);
 
 		// Email
 
@@ -78,10 +79,14 @@ public class WallEntryLocalServiceImpl extends WallEntryLocalServiceBaseImpl {
 
 		// Social
 
+		JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
+
+		extraDataJSONObject.put("comments", wallEntry.getComments());
+
 		if (userId != group.getClassPK()) {
 			SocialActivityLocalServiceUtil.addActivity(
 				userId, groupId, WallEntry.class.getName(), wallEntryId,
-				WallActivityKeys.ADD_ENTRY, StringPool.BLANK,
+				WallActivityKeys.ADD_ENTRY, extraDataJSONObject.toString(),
 				group.getClassPK());
 		}
 
@@ -168,7 +173,7 @@ public class WallEntryLocalServiceImpl extends WallEntryLocalServiceBaseImpl {
 		wallEntry.setModifiedDate(new Date());
 		wallEntry.setComments(comments);
 
-		wallEntryPersistence.update(wallEntry, false);
+		wallEntryPersistence.update(wallEntry);
 
 		return wallEntry;
 	}

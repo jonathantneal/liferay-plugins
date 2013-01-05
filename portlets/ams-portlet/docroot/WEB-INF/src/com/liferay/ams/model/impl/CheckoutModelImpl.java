@@ -36,6 +36,8 @@ import java.io.Serializable;
 import java.sql.Types;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The base model implementation for the Checkout service. Represents a row in the &quot;AMS_Checkout&quot; database table, with each column mapped to a property of this class.
@@ -72,6 +74,8 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 		};
 	public static final String TABLE_SQL_CREATE = "create table AMS_Checkout (checkoutId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,assetId LONG,checkOutDate DATE null,expectedCheckInDate DATE null,actualCheckInDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table AMS_Checkout";
+	public static final String ORDER_BY_JPQL = " ORDER BY checkout.checkoutId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY AMS_Checkout.checkoutId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -110,6 +114,87 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 
 	public String getModelClassName() {
 		return Checkout.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("checkoutId", getCheckoutId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("assetId", getAssetId());
+		attributes.put("checkOutDate", getCheckOutDate());
+		attributes.put("expectedCheckInDate", getExpectedCheckInDate());
+		attributes.put("actualCheckInDate", getActualCheckInDate());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long checkoutId = (Long)attributes.get("checkoutId");
+
+		if (checkoutId != null) {
+			setCheckoutId(checkoutId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long assetId = (Long)attributes.get("assetId");
+
+		if (assetId != null) {
+			setAssetId(assetId);
+		}
+
+		Date checkOutDate = (Date)attributes.get("checkOutDate");
+
+		if (checkOutDate != null) {
+			setCheckOutDate(checkOutDate);
+		}
+
+		Date expectedCheckInDate = (Date)attributes.get("expectedCheckInDate");
+
+		if (expectedCheckInDate != null) {
+			setExpectedCheckInDate(expectedCheckInDate);
+		}
+
+		Date actualCheckInDate = (Date)attributes.get("actualCheckInDate");
+
+		if (actualCheckInDate != null) {
+			setActualCheckInDate(actualCheckInDate);
+		}
 	}
 
 	public long getCheckoutId() {
@@ -206,29 +291,26 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 	}
 
 	@Override
-	public Checkout toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Checkout)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					Checkout.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			Checkout.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Checkout toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Checkout)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -450,7 +532,7 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 	}
 
 	private static ClassLoader _classLoader = Checkout.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			Checkout.class
 		};
 	private long _checkoutId;
@@ -464,6 +546,5 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 	private Date _checkOutDate;
 	private Date _expectedCheckInDate;
 	private Date _actualCheckInDate;
-	private transient ExpandoBridge _expandoBridge;
-	private Checkout _escapedModelProxy;
+	private Checkout _escapedModel;
 }

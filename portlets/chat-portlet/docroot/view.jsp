@@ -82,16 +82,13 @@
 											String middleName = (String)buddy[3];
 											String lastName = (String)buddy[4];
 											long portraitId = (Long)buddy[5];
-											boolean awake = (Boolean)buddy[6];
-
-											String fullName = ContactConstants.getFullName(firstName, middleName, lastName);
 										%>
 
 											<li class="user active" userId="<%= userId %>">
-												<img alt="" src="<%= themeDisplay.getPathImage() %>/user_portrait?img_id=<%= portraitId %>">
+												<img alt="" src="<%= themeDisplay.getPathImage() %>/user_portrait?img_id=<%= portraitId %>&t=<%= WebServerServletTokenUtil.getToken(portraitId) %>" />
 
 												<div class="name">
-													<%= fullName %>
+													<%= HtmlUtil.escape(ContactConstants.getFullName(firstName, middleName, lastName)) %>
 												</div>
 											</li>
 
@@ -119,7 +116,7 @@
 
 								<ul class="lfr-component settings">
 									<li>
-										<label for="statusMessage"><%= LanguageUtil.format(pageContext, "x-is", user.getFullName(), false) %></label>
+										<label for="statusMessage"><%= LanguageUtil.format(pageContext, "x-is", HtmlUtil.escape(user.getFullName()), false) %></label>
 
 										<input id="statusMessage" type="text" value="<%= statusMessage %>" />
 									</li>

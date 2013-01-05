@@ -25,7 +25,7 @@ KBArticle kbArticle = (KBArticle)request.getAttribute(WebKeys.KNOWLEDGE_BASE_KB_
 <div class="kb-article-tools">
 	<table class="lfr-table">
 	<tr>
-		<c:if test="<%= (kbArticle.isApproved() || !kbArticle.isFirstVersion()) && !Validator.equals(portletDisplay.getRootPortletId(), PortletKeys.KNOWLEDGE_BASE_ADMIN) %>">
+		<c:if test="<%= PortalUtil.isRSSFeedsEnabled() && (kbArticle.isApproved() || !kbArticle.isFirstVersion()) && !Validator.equals(portletDisplay.getRootPortletId(), PortletKeys.KNOWLEDGE_BASE_ADMIN) %>">
 			<td>
 				<liferay-portlet:resourceURL id="kbArticleRSS" var="kbArticleRSSURL">
 					<portlet:param name="resourcePrimKey" value="<%= String.valueOf(kbArticle.getResourcePrimKey()) %>" />
@@ -78,7 +78,7 @@ KBArticle kbArticle = (KBArticle)request.getAttribute(WebKeys.KNOWLEDGE_BASE_KB_
 		<c:if test="<%= kbArticle.isApproved() || !kbArticle.isFirstVersion() %>">
 			<td>
 				<liferay-portlet:renderURL var="historyURL">
-					<portlet:param name="mvcPath" value='<%= jspPath + "history.jsp" %>' />
+					<portlet:param name="mvcPath" value='<%= templatePath + "history.jsp" %>' />
 					<portlet:param name="resourcePrimKey" value="<%= String.valueOf(kbArticle.getResourcePrimKey()) %>" />
 					<portlet:param name="status" value="<%= String.valueOf(status) %>" />
 				</liferay-portlet:renderURL>
@@ -95,7 +95,7 @@ KBArticle kbArticle = (KBArticle)request.getAttribute(WebKeys.KNOWLEDGE_BASE_KB_
 
 		<td>
 			<liferay-portlet:renderURL var="printURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-				<portlet:param name="mvcPath" value='<%= jspPath + "print_article.jsp" %>' />
+				<portlet:param name="mvcPath" value='<%= templatePath + "print_article.jsp" %>' />
 				<portlet:param name="resourcePrimKey" value="<%= String.valueOf(kbArticle.getResourcePrimKey()) %>" />
 				<portlet:param name="status" value="<%= String.valueOf(status) %>" />
 			</liferay-portlet:renderURL>

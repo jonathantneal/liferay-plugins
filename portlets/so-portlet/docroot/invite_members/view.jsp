@@ -50,16 +50,18 @@ Group group = GroupLocalServiceUtil.getGroup(scopeGroupId);
 						title = titleNode.get('innerHTML');
 					}
 
-					var viewportRegion = A.getBody().get('viewportRegion');
-
 					var dialog = new A.Dialog(
 						{
+							align: {
+								node: null,
+								points: ['tc', 'tc']
+							},
 							cssClass: 'so-portlet-invite-members',
 							destroyOnClose: true,
+							modal: true,
 							resizable: false,
 							title: title,
-							width: 700,
-							xy: [viewportRegion.left + 20, viewportRegion.top + 20]
+							width: 700
 						}
 					).plug(
 						A.Plugin.IO,
@@ -83,4 +85,13 @@ Group group = GroupLocalServiceUtil.getGroup(scopeGroupId);
 			);
 		</aui:script>
 	</c:when>
+	<c:otherwise>
+		<aui:script use="aui-base">
+			var portlet = A.one('#p_p_id<portlet:namespace />');
+
+			if (portlet) {
+				portlet.hide();
+			}
+		</aui:script>
+	</c:otherwise>
 </c:choose>

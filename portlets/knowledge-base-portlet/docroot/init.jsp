@@ -47,6 +47,7 @@ page import="com.liferay.knowledgebase.service.KBTemplateServiceUtil" %><%@
 page import="com.liferay.knowledgebase.service.permission.AdminPermission" %><%@
 page import="com.liferay.knowledgebase.service.permission.DisplayPermission" %><%@
 page import="com.liferay.knowledgebase.service.permission.KBArticlePermission" %><%@
+page import="com.liferay.knowledgebase.service.permission.KBCommentPermission" %><%@
 page import="com.liferay.knowledgebase.service.permission.KBTemplatePermission" %><%@
 page import="com.liferay.knowledgebase.util.ActionKeys" %><%@
 page import="com.liferay.knowledgebase.util.KnowledgeBaseUtil" %><%@
@@ -63,6 +64,7 @@ page import="com.liferay.portal.kernel.dao.search.RowChecker" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil" %><%@
 page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %><%@
+page import="com.liferay.portal.kernel.repository.model.FileEntry" %><%@
 page import="com.liferay.portal.kernel.search.Field" %><%@
 page import="com.liferay.portal.kernel.search.Hits" %><%@
 page import="com.liferay.portal.kernel.search.Indexer" %><%@
@@ -150,7 +152,7 @@ String redirect = ParamUtil.getString(request, "redirect", currentURL);
 
 String rootPortletId = portletDisplay.getRootPortletId();
 
-String jspPath = portletConfig.getInitParameter("jsp-path");
+String templatePath = portletConfig.getInitParameter("template-path");
 
 Format dateFormatDate = FastDateFormatFactoryUtil.getDate(FastDateFormatConstants.LONG, locale, timeZone);
 Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(FastDateFormatConstants.LONG, FastDateFormatConstants.SHORT, locale, timeZone);

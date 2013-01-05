@@ -16,14 +16,17 @@ package com.liferay.testtransaction.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
 import com.liferay.testtransaction.service.BarLocalServiceUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Brian Wing Shun Chan
@@ -56,6 +59,31 @@ public class BarClp extends BaseModelImpl<Bar> implements Bar {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("barId", getBarId());
+		attributes.put("text", getText());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long barId = (Long)attributes.get("barId");
+
+		if (barId != null) {
+			setBarId(barId);
+		}
+
+		String text = (String)attributes.get("text");
+
+		if (text != null) {
+			setText(text);
+		}
+	}
+
 	public long getBarId() {
 		return _barId;
 	}
@@ -72,6 +100,14 @@ public class BarClp extends BaseModelImpl<Bar> implements Bar {
 		_text = text;
 	}
 
+	public BaseModel<?> getBarRemoteModel() {
+		return _barRemoteModel;
+	}
+
+	public void setBarRemoteModel(BaseModel<?> barRemoteModel) {
+		_barRemoteModel = barRemoteModel;
+	}
+
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			BarLocalServiceUtil.addBar(this);
@@ -83,7 +119,7 @@ public class BarClp extends BaseModelImpl<Bar> implements Bar {
 
 	@Override
 	public Bar toEscapedModel() {
-		return (Bar)Proxy.newProxyInstance(Bar.class.getClassLoader(),
+		return (Bar)ProxyUtil.newProxyInstance(Bar.class.getClassLoader(),
 			new Class[] { Bar.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -175,4 +211,5 @@ public class BarClp extends BaseModelImpl<Bar> implements Bar {
 
 	private long _barId;
 	private String _text;
+	private BaseModel<?> _barRemoteModel;
 }

@@ -309,6 +309,21 @@ public interface KaleoActionModel extends BaseModel<KaleoAction>, GroupedModel {
 	public void setScriptLanguage(String scriptLanguage);
 
 	/**
+	 * Returns the script required contexts of this kaleo action.
+	 *
+	 * @return the script required contexts of this kaleo action
+	 */
+	@AutoEscape
+	public String getScriptRequiredContexts();
+
+	/**
+	 * Sets the script required contexts of this kaleo action.
+	 *
+	 * @param scriptRequiredContexts the script required contexts of this kaleo action
+	 */
+	public void setScriptRequiredContexts(String scriptRequiredContexts);
+
+	/**
 	 * Returns the priority of this kaleo action.
 	 *
 	 * @return the priority of this kaleo action
@@ -349,6 +364,8 @@ public interface KaleoActionModel extends BaseModel<KaleoAction>, GroupedModel {
 	public CacheModel<KaleoAction> toCacheModel();
 
 	public KaleoAction toEscapedModel();
+
+	public KaleoAction toUnescapedModel();
 
 	public String toString();
 

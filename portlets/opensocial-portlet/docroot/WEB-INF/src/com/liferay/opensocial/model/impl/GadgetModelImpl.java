@@ -37,7 +37,9 @@ import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The base model implementation for the Gadget service. Represents a row in the &quot;OpenSocial_Gadget&quot; database table, with each column mapped to a property of this class.
@@ -90,6 +92,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	public static long COMPANYID_COLUMN_BITMASK = 1L;
 	public static long URL_COLUMN_BITMASK = 2L;
 	public static long UUID_COLUMN_BITMASK = 4L;
+	public static long NAME_COLUMN_BITMASK = 8L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -98,6 +101,10 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	 * @return the normal model instance
 	 */
 	public static Gadget toModel(GadgetSoap soapModel) {
+		if (soapModel == null) {
+			return null;
+		}
+
 		Gadget model = new GadgetImpl();
 
 		model.setUuid(soapModel.getUuid());
@@ -119,6 +126,10 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	 * @return the normal model instances
 	 */
 	public static List<Gadget> toModels(GadgetSoap[] soapModels) {
+		if (soapModels == null) {
+			return null;
+		}
+
 		List<Gadget> models = new ArrayList<Gadget>(soapModels.length);
 
 		for (GadgetSoap soapModel : soapModels) {
@@ -156,6 +167,74 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 
 	public String getModelClassName() {
 		return Gadget.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("uuid", getUuid());
+		attributes.put("gadgetId", getGadgetId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("name", getName());
+		attributes.put("url", getUrl());
+		attributes.put("portletCategoryNames", getPortletCategoryNames());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		String uuid = (String)attributes.get("uuid");
+
+		if (uuid != null) {
+			setUuid(uuid);
+		}
+
+		Long gadgetId = (Long)attributes.get("gadgetId");
+
+		if (gadgetId != null) {
+			setGadgetId(gadgetId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		String name = (String)attributes.get("name");
+
+		if (name != null) {
+			setName(name);
+		}
+
+		String url = (String)attributes.get("url");
+
+		if (url != null) {
+			setUrl(url);
+		}
+
+		String portletCategoryNames = (String)attributes.get(
+				"portletCategoryNames");
+
+		if (portletCategoryNames != null) {
+			setPortletCategoryNames(portletCategoryNames);
+		}
 	}
 
 	@JSON
@@ -287,29 +366,26 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	}
 
 	@Override
-	public Gadget toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Gadget)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					Gadget.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			Gadget.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Gadget toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Gadget)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -520,9 +596,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	}
 
 	private static ClassLoader _classLoader = Gadget.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			Gadget.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { Gadget.class };
 	private String _uuid;
 	private String _originalUuid;
 	private long _gadgetId;
@@ -535,7 +609,6 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	private String _url;
 	private String _originalUrl;
 	private String _portletCategoryNames;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private Gadget _escapedModelProxy;
+	private Gadget _escapedModel;
 }

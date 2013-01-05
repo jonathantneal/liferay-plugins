@@ -1,15 +1,18 @@
 /**
  * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This file is part of Liferay Social Office. Liferay Social Office is free
+ * software: you can redistribute it and/or modify it under the terms of the GNU
+ * Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * Liferay Social Office is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Liferay Social Office. If not, see http://www.gnu.org/licenses/agpl-3.0.html.
  */
 
 package com.liferay.microblogs.service.impl;
@@ -58,7 +61,8 @@ public class MicroblogsEntryServiceImpl extends MicroblogsEntryServiceBaseImpl {
 	public List<MicroblogsEntry> getMicroblogsEntries(int start, int end)
 		throws PortalException, SystemException {
 
-		return microblogsEntryFinder.findByUserId(getUserId(), start, end);
+		return microblogsEntryFinder.findByUserId(
+			getGuestOrUserId(), start, end);
 	}
 
 	public List<MicroblogsEntry> getMicroblogsEntries(
@@ -66,19 +70,20 @@ public class MicroblogsEntryServiceImpl extends MicroblogsEntryServiceBaseImpl {
 		throws PortalException, SystemException {
 
 		return microblogsEntryFinder.findByU_ATN(
-			getUserId(), assetTagName, start, end);
+			getGuestOrUserId(), assetTagName, start, end);
 	}
 
 	public int getMicroblogsEntriesCount()
 		throws PortalException, SystemException {
 
-		return microblogsEntryFinder.countByUserId(getUserId());
+		return microblogsEntryFinder.countByUserId(getGuestOrUserId());
 	}
 
 	public int getMicroblogsEntriesCount(String assetTagName)
 		throws PortalException, SystemException {
 
-		return microblogsEntryFinder.countByU_ATN(getUserId(), assetTagName);
+		return microblogsEntryFinder.countByU_ATN(
+			getGuestOrUserId(), assetTagName);
 	}
 
 	public MicroblogsEntry getMicroblogsEntry(long microblogsEntryId)
@@ -96,7 +101,7 @@ public class MicroblogsEntryServiceImpl extends MicroblogsEntryServiceBaseImpl {
 		throws PortalException, SystemException {
 
 		return microblogsEntryFinder.findByU_MU(
-			getUserId(), microblogsEntryUserId, start, end);
+			getGuestOrUserId(), microblogsEntryUserId, start, end);
 	}
 
 	public List<MicroblogsEntry> getUserMicroblogsEntries(
@@ -104,14 +109,14 @@ public class MicroblogsEntryServiceImpl extends MicroblogsEntryServiceBaseImpl {
 		throws PortalException, SystemException {
 
 		return microblogsEntryFinder.findByU_T_MU(
-			getUserId(), type, microblogsEntryUserId, start, end);
+			getGuestOrUserId(), type, microblogsEntryUserId, start, end);
 	}
 
 	public int getUserMicroblogsEntriesCount(long microblogsEntryUserId)
 		throws PortalException, SystemException {
 
 		return microblogsEntryFinder.countByU_MU(
-			getUserId(), microblogsEntryUserId);
+			getGuestOrUserId(), microblogsEntryUserId);
 	}
 
 	public int getUserMicroblogsEntriesCount(
@@ -119,7 +124,7 @@ public class MicroblogsEntryServiceImpl extends MicroblogsEntryServiceBaseImpl {
 		throws PortalException, SystemException {
 
 		return microblogsEntryFinder.countByU_T_MU(
-			getUserId(), type, microblogsEntryUserId);
+			getGuestOrUserId(), type, microblogsEntryUserId);
 	}
 
 	public MicroblogsEntry updateMicroblogsEntry(

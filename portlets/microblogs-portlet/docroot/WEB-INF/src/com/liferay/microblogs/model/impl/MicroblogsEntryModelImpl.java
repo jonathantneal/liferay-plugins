@@ -40,7 +40,9 @@ import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The base model implementation for the MicroblogsEntry service. Represents a row in the &quot;MicroblogsEntry&quot; database table, with each column mapped to a property of this class.
@@ -98,6 +100,7 @@ public class MicroblogsEntryModelImpl extends BaseModelImpl<MicroblogsEntry>
 	public static long RECEIVERUSERID_COLUMN_BITMASK = 4L;
 	public static long TYPE_COLUMN_BITMASK = 8L;
 	public static long USERID_COLUMN_BITMASK = 16L;
+	public static long CREATEDATE_COLUMN_BITMASK = 32L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -106,6 +109,10 @@ public class MicroblogsEntryModelImpl extends BaseModelImpl<MicroblogsEntry>
 	 * @return the normal model instance
 	 */
 	public static MicroblogsEntry toModel(MicroblogsEntrySoap soapModel) {
+		if (soapModel == null) {
+			return null;
+		}
+
 		MicroblogsEntry model = new MicroblogsEntryImpl();
 
 		model.setMicroblogsEntryId(soapModel.getMicroblogsEntryId());
@@ -131,6 +138,10 @@ public class MicroblogsEntryModelImpl extends BaseModelImpl<MicroblogsEntry>
 	 */
 	public static List<MicroblogsEntry> toModels(
 		MicroblogsEntrySoap[] soapModels) {
+		if (soapModels == null) {
+			return null;
+		}
+
 		List<MicroblogsEntry> models = new ArrayList<MicroblogsEntry>(soapModels.length);
 
 		for (MicroblogsEntrySoap soapModel : soapModels) {
@@ -168,6 +179,97 @@ public class MicroblogsEntryModelImpl extends BaseModelImpl<MicroblogsEntry>
 
 	public String getModelClassName() {
 		return MicroblogsEntry.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("microblogsEntryId", getMicroblogsEntryId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("content", getContent());
+		attributes.put("type", getType());
+		attributes.put("receiverUserId", getReceiverUserId());
+		attributes.put("receiverMicroblogsEntryId",
+			getReceiverMicroblogsEntryId());
+		attributes.put("socialRelationType", getSocialRelationType());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long microblogsEntryId = (Long)attributes.get("microblogsEntryId");
+
+		if (microblogsEntryId != null) {
+			setMicroblogsEntryId(microblogsEntryId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		String content = (String)attributes.get("content");
+
+		if (content != null) {
+			setContent(content);
+		}
+
+		Integer type = (Integer)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
+		}
+
+		Long receiverUserId = (Long)attributes.get("receiverUserId");
+
+		if (receiverUserId != null) {
+			setReceiverUserId(receiverUserId);
+		}
+
+		Long receiverMicroblogsEntryId = (Long)attributes.get(
+				"receiverMicroblogsEntryId");
+
+		if (receiverMicroblogsEntryId != null) {
+			setReceiverMicroblogsEntryId(receiverMicroblogsEntryId);
+		}
+
+		Integer socialRelationType = (Integer)attributes.get(
+				"socialRelationType");
+
+		if (socialRelationType != null) {
+			setSocialRelationType(socialRelationType);
+		}
 	}
 
 	@JSON
@@ -363,29 +465,26 @@ public class MicroblogsEntryModelImpl extends BaseModelImpl<MicroblogsEntry>
 	}
 
 	@Override
-	public MicroblogsEntry toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (MicroblogsEntry)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					MicroblogsEntry.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			MicroblogsEntry.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public MicroblogsEntry toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (MicroblogsEntry)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -625,7 +724,7 @@ public class MicroblogsEntryModelImpl extends BaseModelImpl<MicroblogsEntry>
 	}
 
 	private static ClassLoader _classLoader = MicroblogsEntry.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			MicroblogsEntry.class
 		};
 	private long _microblogsEntryId;
@@ -651,7 +750,6 @@ public class MicroblogsEntryModelImpl extends BaseModelImpl<MicroblogsEntry>
 	private long _originalReceiverMicroblogsEntryId;
 	private boolean _setOriginalReceiverMicroblogsEntryId;
 	private int _socialRelationType;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private MicroblogsEntry _escapedModelProxy;
+	private MicroblogsEntry _escapedModel;
 }

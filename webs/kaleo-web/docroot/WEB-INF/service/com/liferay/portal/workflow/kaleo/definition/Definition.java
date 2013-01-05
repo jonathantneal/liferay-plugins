@@ -14,9 +14,11 @@
 
 package com.liferay.portal.workflow.kaleo.definition;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,6 +49,15 @@ public class Definition {
 			if (state.isInitial()) {
 				_initialState = state;
 			}
+			else if (state.isTerminal()) {
+				_terminalStates.add(state);
+			}
+		}
+		else if (node instanceof Fork) {
+			_forks.add((Fork)node);
+		}
+		else if (node instanceof Join) {
+			_joins.add((Join)node);
 		}
 	}
 
@@ -58,8 +69,24 @@ public class Definition {
 		return _description;
 	}
 
+	public List<Fork> getForks() {
+		return _forks;
+	}
+
+	public int getForksCount() {
+		return _forks.size();
+	}
+
 	public State getInitialState() {
 		return _initialState;
+	}
+
+	public List<Join> getJoins() {
+		return _joins;
+	}
+
+	public int getJoinsCount() {
+		return _joins.size();
 	}
 
 	public String getName() {
@@ -74,15 +101,26 @@ public class Definition {
 		return Collections.unmodifiableCollection(_nodesMap.values());
 	}
 
+	public List<State> getTerminalStates() {
+		return _terminalStates;
+	}
+
 	public int getVersion() {
 		return _version;
 	}
 
+	public boolean hasNode(String name) {
+		return _nodesMap.containsKey(name);
+	}
+
 	private String _content;
 	private String _description;
+	private List<Fork> _forks = new ArrayList<Fork>();
 	private State _initialState;
+	private List<Join> _joins = new ArrayList<Join>();
 	private String _name;
 	private Map<String, Node> _nodesMap = new HashMap<String, Node>();
+	private List<State> _terminalStates = new ArrayList<State>();
 	private int _version;
 
 }

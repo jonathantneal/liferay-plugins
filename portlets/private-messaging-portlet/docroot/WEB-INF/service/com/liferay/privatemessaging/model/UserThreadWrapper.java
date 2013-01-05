@@ -16,6 +16,10 @@ package com.liferay.privatemessaging.model;
 
 import com.liferay.portal.model.ModelWrapper;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * <p>
  * This class is a wrapper for {@link UserThread}.
@@ -36,6 +40,85 @@ public class UserThreadWrapper implements UserThread, ModelWrapper<UserThread> {
 
 	public String getModelClassName() {
 		return UserThread.class.getName();
+	}
+
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("userThreadId", getUserThreadId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("mbThreadId", getMbThreadId());
+		attributes.put("topMBMessageId", getTopMBMessageId());
+		attributes.put("read", getRead());
+		attributes.put("deleted", getDeleted());
+
+		return attributes;
+	}
+
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long userThreadId = (Long)attributes.get("userThreadId");
+
+		if (userThreadId != null) {
+			setUserThreadId(userThreadId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long mbThreadId = (Long)attributes.get("mbThreadId");
+
+		if (mbThreadId != null) {
+			setMbThreadId(mbThreadId);
+		}
+
+		Long topMBMessageId = (Long)attributes.get("topMBMessageId");
+
+		if (topMBMessageId != null) {
+			setTopMBMessageId(topMBMessageId);
+		}
+
+		Boolean read = (Boolean)attributes.get("read");
+
+		if (read != null) {
+			setRead(read);
+		}
+
+		Boolean deleted = (Boolean)attributes.get("deleted");
+
+		if (deleted != null) {
+			setDeleted(deleted);
+		}
 	}
 
 	/**
@@ -128,6 +211,24 @@ public class UserThreadWrapper implements UserThread, ModelWrapper<UserThread> {
 	*/
 	public void setUserUuid(java.lang.String userUuid) {
 		_userThread.setUserUuid(userUuid);
+	}
+
+	/**
+	* Returns the user name of this user thread.
+	*
+	* @return the user name of this user thread
+	*/
+	public java.lang.String getUserName() {
+		return _userThread.getUserName();
+	}
+
+	/**
+	* Sets the user name of this user thread.
+	*
+	* @param userName the user name of this user thread
+	*/
+	public void setUserName(java.lang.String userName) {
+		_userThread.setUserName(userName);
 	}
 
 	/**
@@ -314,6 +415,10 @@ public class UserThreadWrapper implements UserThread, ModelWrapper<UserThread> {
 
 	public com.liferay.privatemessaging.model.UserThread toEscapedModel() {
 		return new UserThreadWrapper(_userThread.toEscapedModel());
+	}
+
+	public com.liferay.privatemessaging.model.UserThread toUnescapedModel() {
+		return new UserThreadWrapper(_userThread.toUnescapedModel());
 	}
 
 	@Override

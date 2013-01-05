@@ -35,6 +35,8 @@ import java.io.Serializable;
 import java.sql.Types;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The base model implementation for the KaleoInstance service. Represents a row in the &quot;KaleoInstance&quot; database table, with each column mapped to a property of this class.
@@ -97,6 +99,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 	public static long KALEODEFINITIONID_COLUMN_BITMASK = 8L;
 	public static long KALEODEFINITIONNAME_COLUMN_BITMASK = 16L;
 	public static long KALEODEFINITIONVERSION_COLUMN_BITMASK = 32L;
+	public static long KALEOINSTANCEID_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.portal.workflow.kaleo.model.KaleoInstance"));
 
@@ -125,6 +128,132 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 
 	public String getModelClassName() {
 		return KaleoInstance.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("kaleoInstanceId", getKaleoInstanceId());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("kaleoDefinitionId", getKaleoDefinitionId());
+		attributes.put("kaleoDefinitionName", getKaleoDefinitionName());
+		attributes.put("kaleoDefinitionVersion", getKaleoDefinitionVersion());
+		attributes.put("rootKaleoInstanceTokenId", getRootKaleoInstanceTokenId());
+		attributes.put("className", getClassName());
+		attributes.put("classPK", getClassPK());
+		attributes.put("completed", getCompleted());
+		attributes.put("completionDate", getCompletionDate());
+		attributes.put("workflowContext", getWorkflowContext());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long kaleoInstanceId = (Long)attributes.get("kaleoInstanceId");
+
+		if (kaleoInstanceId != null) {
+			setKaleoInstanceId(kaleoInstanceId);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long kaleoDefinitionId = (Long)attributes.get("kaleoDefinitionId");
+
+		if (kaleoDefinitionId != null) {
+			setKaleoDefinitionId(kaleoDefinitionId);
+		}
+
+		String kaleoDefinitionName = (String)attributes.get(
+				"kaleoDefinitionName");
+
+		if (kaleoDefinitionName != null) {
+			setKaleoDefinitionName(kaleoDefinitionName);
+		}
+
+		Integer kaleoDefinitionVersion = (Integer)attributes.get(
+				"kaleoDefinitionVersion");
+
+		if (kaleoDefinitionVersion != null) {
+			setKaleoDefinitionVersion(kaleoDefinitionVersion);
+		}
+
+		Long rootKaleoInstanceTokenId = (Long)attributes.get(
+				"rootKaleoInstanceTokenId");
+
+		if (rootKaleoInstanceTokenId != null) {
+			setRootKaleoInstanceTokenId(rootKaleoInstanceTokenId);
+		}
+
+		String className = (String)attributes.get("className");
+
+		if (className != null) {
+			setClassName(className);
+		}
+
+		Long classPK = (Long)attributes.get("classPK");
+
+		if (classPK != null) {
+			setClassPK(classPK);
+		}
+
+		Boolean completed = (Boolean)attributes.get("completed");
+
+		if (completed != null) {
+			setCompleted(completed);
+		}
+
+		Date completionDate = (Date)attributes.get("completionDate");
+
+		if (completionDate != null) {
+			setCompletionDate(completionDate);
+		}
+
+		String workflowContext = (String)attributes.get("workflowContext");
+
+		if (workflowContext != null) {
+			setWorkflowContext(workflowContext);
+		}
 	}
 
 	public long getKaleoInstanceId() {
@@ -362,29 +491,26 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 	}
 
 	@Override
-	public KaleoInstance toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (KaleoInstance)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					KaleoInstance.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			KaleoInstance.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public KaleoInstance toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (KaleoInstance)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -694,7 +820,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 	}
 
 	private static ClassLoader _classLoader = KaleoInstance.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			KaleoInstance.class
 		};
 	private long _kaleoInstanceId;
@@ -724,7 +850,6 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 	private Date _completionDate;
 	private Date _originalCompletionDate;
 	private String _workflowContext;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private KaleoInstance _escapedModelProxy;
+	private KaleoInstance _escapedModel;
 }

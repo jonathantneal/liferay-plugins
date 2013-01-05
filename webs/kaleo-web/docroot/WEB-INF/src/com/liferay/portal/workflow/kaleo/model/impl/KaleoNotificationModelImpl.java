@@ -35,6 +35,8 @@ import java.io.Serializable;
 import java.sql.Types;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The base model implementation for the KaleoNotification service. Represents a row in the &quot;KaleoNotification&quot; database table, with each column mapped to a property of this class.
@@ -97,6 +99,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 	public static long KALEOCLASSNAME_COLUMN_BITMASK = 4L;
 	public static long KALEOCLASSPK_COLUMN_BITMASK = 8L;
 	public static long KALEODEFINITIONID_COLUMN_BITMASK = 16L;
+	public static long KALEONOTIFICATIONID_COLUMN_BITMASK = 32L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.portal.workflow.kaleo.model.KaleoNotification"));
 
@@ -125,6 +128,136 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 
 	public String getModelClassName() {
 		return KaleoNotification.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("kaleoNotificationId", getKaleoNotificationId());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("kaleoClassName", getKaleoClassName());
+		attributes.put("kaleoClassPK", getKaleoClassPK());
+		attributes.put("kaleoDefinitionId", getKaleoDefinitionId());
+		attributes.put("kaleoNodeName", getKaleoNodeName());
+		attributes.put("name", getName());
+		attributes.put("description", getDescription());
+		attributes.put("executionType", getExecutionType());
+		attributes.put("template", getTemplate());
+		attributes.put("templateLanguage", getTemplateLanguage());
+		attributes.put("notificationTypes", getNotificationTypes());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long kaleoNotificationId = (Long)attributes.get("kaleoNotificationId");
+
+		if (kaleoNotificationId != null) {
+			setKaleoNotificationId(kaleoNotificationId);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		String kaleoClassName = (String)attributes.get("kaleoClassName");
+
+		if (kaleoClassName != null) {
+			setKaleoClassName(kaleoClassName);
+		}
+
+		Long kaleoClassPK = (Long)attributes.get("kaleoClassPK");
+
+		if (kaleoClassPK != null) {
+			setKaleoClassPK(kaleoClassPK);
+		}
+
+		Long kaleoDefinitionId = (Long)attributes.get("kaleoDefinitionId");
+
+		if (kaleoDefinitionId != null) {
+			setKaleoDefinitionId(kaleoDefinitionId);
+		}
+
+		String kaleoNodeName = (String)attributes.get("kaleoNodeName");
+
+		if (kaleoNodeName != null) {
+			setKaleoNodeName(kaleoNodeName);
+		}
+
+		String name = (String)attributes.get("name");
+
+		if (name != null) {
+			setName(name);
+		}
+
+		String description = (String)attributes.get("description");
+
+		if (description != null) {
+			setDescription(description);
+		}
+
+		String executionType = (String)attributes.get("executionType");
+
+		if (executionType != null) {
+			setExecutionType(executionType);
+		}
+
+		String template = (String)attributes.get("template");
+
+		if (template != null) {
+			setTemplate(template);
+		}
+
+		String templateLanguage = (String)attributes.get("templateLanguage");
+
+		if (templateLanguage != null) {
+			setTemplateLanguage(templateLanguage);
+		}
+
+		String notificationTypes = (String)attributes.get("notificationTypes");
+
+		if (notificationTypes != null) {
+			setNotificationTypes(notificationTypes);
+		}
 	}
 
 	public long getKaleoNotificationId() {
@@ -379,29 +512,26 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 	}
 
 	@Override
-	public KaleoNotification toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (KaleoNotification)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					KaleoNotification.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			KaleoNotification.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public KaleoNotification toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (KaleoNotification)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -738,7 +868,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 	}
 
 	private static ClassLoader _classLoader = KaleoNotification.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			KaleoNotification.class
 		};
 	private long _kaleoNotificationId;
@@ -767,7 +897,6 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 	private String _template;
 	private String _templateLanguage;
 	private String _notificationTypes;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private KaleoNotification _escapedModelProxy;
+	private KaleoNotification _escapedModel;
 }

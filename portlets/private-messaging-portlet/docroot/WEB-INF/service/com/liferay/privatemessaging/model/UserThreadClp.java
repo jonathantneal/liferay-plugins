@@ -17,7 +17,9 @@ package com.liferay.privatemessaging.model;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
@@ -25,9 +27,9 @@ import com.liferay.privatemessaging.service.UserThreadLocalServiceUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
-
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Brian Wing Shun Chan
@@ -61,6 +63,87 @@ public class UserThreadClp extends BaseModelImpl<UserThread>
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("userThreadId", getUserThreadId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("mbThreadId", getMbThreadId());
+		attributes.put("topMBMessageId", getTopMBMessageId());
+		attributes.put("read", getRead());
+		attributes.put("deleted", getDeleted());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long userThreadId = (Long)attributes.get("userThreadId");
+
+		if (userThreadId != null) {
+			setUserThreadId(userThreadId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long mbThreadId = (Long)attributes.get("mbThreadId");
+
+		if (mbThreadId != null) {
+			setMbThreadId(mbThreadId);
+		}
+
+		Long topMBMessageId = (Long)attributes.get("topMBMessageId");
+
+		if (topMBMessageId != null) {
+			setTopMBMessageId(topMBMessageId);
+		}
+
+		Boolean read = (Boolean)attributes.get("read");
+
+		if (read != null) {
+			setRead(read);
+		}
+
+		Boolean deleted = (Boolean)attributes.get("deleted");
+
+		if (deleted != null) {
+			setDeleted(deleted);
+		}
+	}
+
 	public long getUserThreadId() {
 		return _userThreadId;
 	}
@@ -91,6 +174,14 @@ public class UserThreadClp extends BaseModelImpl<UserThread>
 
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
+	}
+
+	public String getUserName() {
+		return _userName;
+	}
+
+	public void setUserName(String userName) {
+		_userName = userName;
 	}
 
 	public Date getCreateDate() {
@@ -149,6 +240,14 @@ public class UserThreadClp extends BaseModelImpl<UserThread>
 		_deleted = deleted;
 	}
 
+	public BaseModel<?> getUserThreadRemoteModel() {
+		return _userThreadRemoteModel;
+	}
+
+	public void setUserThreadRemoteModel(BaseModel<?> userThreadRemoteModel) {
+		_userThreadRemoteModel = userThreadRemoteModel;
+	}
+
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			UserThreadLocalServiceUtil.addUserThread(this);
@@ -160,7 +259,7 @@ public class UserThreadClp extends BaseModelImpl<UserThread>
 
 	@Override
 	public UserThread toEscapedModel() {
-		return (UserThread)Proxy.newProxyInstance(UserThread.class.getClassLoader(),
+		return (UserThread)ProxyUtil.newProxyInstance(UserThread.class.getClassLoader(),
 			new Class[] { UserThread.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -171,6 +270,7 @@ public class UserThreadClp extends BaseModelImpl<UserThread>
 		clone.setUserThreadId(getUserThreadId());
 		clone.setCompanyId(getCompanyId());
 		clone.setUserId(getUserId());
+		clone.setUserName(getUserName());
 		clone.setCreateDate(getCreateDate());
 		clone.setModifiedDate(getModifiedDate());
 		clone.setMbThreadId(getMbThreadId());
@@ -228,7 +328,7 @@ public class UserThreadClp extends BaseModelImpl<UserThread>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{userThreadId=");
 		sb.append(getUserThreadId());
@@ -236,6 +336,8 @@ public class UserThreadClp extends BaseModelImpl<UserThread>
 		sb.append(getCompanyId());
 		sb.append(", userId=");
 		sb.append(getUserId());
+		sb.append(", userName=");
+		sb.append(getUserName());
 		sb.append(", createDate=");
 		sb.append(getCreateDate());
 		sb.append(", modifiedDate=");
@@ -254,7 +356,7 @@ public class UserThreadClp extends BaseModelImpl<UserThread>
 	}
 
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(34);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.privatemessaging.model.UserThread");
@@ -271,6 +373,10 @@ public class UserThreadClp extends BaseModelImpl<UserThread>
 		sb.append(
 			"<column><column-name>userId</column-name><column-value><![CDATA[");
 		sb.append(getUserId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>userName</column-name><column-value><![CDATA[");
+		sb.append(getUserName());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>createDate</column-name><column-value><![CDATA[");
@@ -306,10 +412,12 @@ public class UserThreadClp extends BaseModelImpl<UserThread>
 	private long _companyId;
 	private long _userId;
 	private String _userUuid;
+	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
 	private long _mbThreadId;
 	private long _topMBMessageId;
 	private boolean _read;
 	private boolean _deleted;
+	private BaseModel<?> _userThreadRemoteModel;
 }

@@ -33,6 +33,9 @@ import java.io.Serializable;
 
 import java.sql.Types;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The base model implementation for the JIRAChangeItem service. Represents a row in the &quot;changeitem&quot; database table, with each column mapped to a property of this class.
  *
@@ -65,6 +68,8 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		};
 	public static final String TABLE_SQL_CREATE = "create table changeitem (id LONG not null primary key,groupid LONG,field VARCHAR(75) null,oldValue VARCHAR(75) null,oldString VARCHAR(75) null,newValue VARCHAR(75) null,newString VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table changeitem";
+	public static final String ORDER_BY_JPQL = " ORDER BY jiraChangeItem.jiraChangeItemId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY changeitem.id ASC";
 	public static final String DATA_SOURCE = "jiraDataSource";
 	public static final String SESSION_FACTORY = "jiraSessionFactory";
 	public static final String TX_MANAGER = "jiraTransactionManager";
@@ -78,6 +83,7 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 				"value.object.column.bitmask.enabled.com.liferay.socialcoding.model.JIRAChangeItem"),
 			true);
 	public static long JIRACHANGEGROUPID_COLUMN_BITMASK = 1L;
+	public static long JIRACHANGEITEMID_COLUMN_BITMASK = 2L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.socialcoding.model.JIRAChangeItem"));
 
@@ -106,6 +112,66 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 
 	public String getModelClassName() {
 		return JIRAChangeItem.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("jiraChangeItemId", getJiraChangeItemId());
+		attributes.put("jiraChangeGroupId", getJiraChangeGroupId());
+		attributes.put("field", getField());
+		attributes.put("oldValue", getOldValue());
+		attributes.put("oldString", getOldString());
+		attributes.put("newValue", getNewValue());
+		attributes.put("newString", getNewString());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long jiraChangeItemId = (Long)attributes.get("jiraChangeItemId");
+
+		if (jiraChangeItemId != null) {
+			setJiraChangeItemId(jiraChangeItemId);
+		}
+
+		Long jiraChangeGroupId = (Long)attributes.get("jiraChangeGroupId");
+
+		if (jiraChangeGroupId != null) {
+			setJiraChangeGroupId(jiraChangeGroupId);
+		}
+
+		String field = (String)attributes.get("field");
+
+		if (field != null) {
+			setField(field);
+		}
+
+		String oldValue = (String)attributes.get("oldValue");
+
+		if (oldValue != null) {
+			setOldValue(oldValue);
+		}
+
+		String oldString = (String)attributes.get("oldString");
+
+		if (oldString != null) {
+			setOldString(oldString);
+		}
+
+		String newValue = (String)attributes.get("newValue");
+
+		if (newValue != null) {
+			setNewValue(newValue);
+		}
+
+		String newString = (String)attributes.get("newString");
+
+		if (newString != null) {
+			setNewString(newString);
+		}
 	}
 
 	public long getJiraChangeItemId() {
@@ -206,29 +272,26 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 	}
 
 	@Override
-	public JIRAChangeItem toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (JIRAChangeItem)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-					JIRAChangeItem.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			JIRAChangeItem.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public JIRAChangeItem toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (JIRAChangeItem)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -419,7 +482,7 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 	}
 
 	private static ClassLoader _classLoader = JIRAChangeItem.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			JIRAChangeItem.class
 		};
 	private long _jiraChangeItemId;
@@ -431,7 +494,6 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 	private String _oldString;
 	private String _newValue;
 	private String _newString;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private JIRAChangeItem _escapedModelProxy;
+	private JIRAChangeItem _escapedModel;
 }

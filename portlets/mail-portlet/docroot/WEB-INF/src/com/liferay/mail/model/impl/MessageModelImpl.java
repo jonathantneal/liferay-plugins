@@ -37,6 +37,8 @@ import java.io.Serializable;
 import java.sql.Types;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The base model implementation for the Message service. Represents a row in the &quot;Mail_Message&quot; database table, with each column mapped to a property of this class.
@@ -99,6 +101,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 	public static long COMPANYID_COLUMN_BITMASK = 1L;
 	public static long FOLDERID_COLUMN_BITMASK = 2L;
 	public static long REMOTEMESSAGEID_COLUMN_BITMASK = 4L;
+	public static long SENTDATE_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.mail.model.Message"));
 
@@ -127,6 +130,150 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	public String getModelClassName() {
 		return Message.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("messageId", getMessageId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("accountId", getAccountId());
+		attributes.put("folderId", getFolderId());
+		attributes.put("sender", getSender());
+		attributes.put("to", getTo());
+		attributes.put("cc", getCc());
+		attributes.put("bcc", getBcc());
+		attributes.put("sentDate", getSentDate());
+		attributes.put("subject", getSubject());
+		attributes.put("preview", getPreview());
+		attributes.put("body", getBody());
+		attributes.put("flags", getFlags());
+		attributes.put("size", getSize());
+		attributes.put("remoteMessageId", getRemoteMessageId());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long messageId = (Long)attributes.get("messageId");
+
+		if (messageId != null) {
+			setMessageId(messageId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long accountId = (Long)attributes.get("accountId");
+
+		if (accountId != null) {
+			setAccountId(accountId);
+		}
+
+		Long folderId = (Long)attributes.get("folderId");
+
+		if (folderId != null) {
+			setFolderId(folderId);
+		}
+
+		String sender = (String)attributes.get("sender");
+
+		if (sender != null) {
+			setSender(sender);
+		}
+
+		String to = (String)attributes.get("to");
+
+		if (to != null) {
+			setTo(to);
+		}
+
+		String cc = (String)attributes.get("cc");
+
+		if (cc != null) {
+			setCc(cc);
+		}
+
+		String bcc = (String)attributes.get("bcc");
+
+		if (bcc != null) {
+			setBcc(bcc);
+		}
+
+		Date sentDate = (Date)attributes.get("sentDate");
+
+		if (sentDate != null) {
+			setSentDate(sentDate);
+		}
+
+		String subject = (String)attributes.get("subject");
+
+		if (subject != null) {
+			setSubject(subject);
+		}
+
+		String preview = (String)attributes.get("preview");
+
+		if (preview != null) {
+			setPreview(preview);
+		}
+
+		String body = (String)attributes.get("body");
+
+		if (body != null) {
+			setBody(body);
+		}
+
+		String flags = (String)attributes.get("flags");
+
+		if (flags != null) {
+			setFlags(flags);
+		}
+
+		Long size = (Long)attributes.get("size");
+
+		if (size != null) {
+			setSize(size);
+		}
+
+		Long remoteMessageId = (Long)attributes.get("remoteMessageId");
+
+		if (remoteMessageId != null) {
+			setRemoteMessageId(remoteMessageId);
+		}
 	}
 
 	public long getMessageId() {
@@ -377,29 +524,26 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 	}
 
 	@Override
-	public Message toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Message)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					Message.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			Message.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Message toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Message)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -749,7 +893,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 	}
 
 	private static ClassLoader _classLoader = Message.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			Message.class
 		};
 	private long _messageId;
@@ -778,7 +922,6 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 	private long _remoteMessageId;
 	private long _originalRemoteMessageId;
 	private boolean _setOriginalRemoteMessageId;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private Message _escapedModelProxy;
+	private Message _escapedModel;
 }

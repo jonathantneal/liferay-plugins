@@ -75,7 +75,7 @@ AUI().use(
 
 								event.cfg.data = {
 									directory: data.directory || false,
-									end: data.end || 0,
+									end: data.end || 10,
 									keywords: data.keywords || '',
 									searchTab: data.searchTab || tabs1,
 									start: data.start || 0
@@ -147,6 +147,14 @@ AUI().use(
 				var instance = this;
 
 				instance._directoryList = directoryList;
+			},
+
+			setTitle: function(title) {
+				var instance = this;
+
+				var popup = instance.getPopup();
+
+				popup.set('title', title);
 			},
 
 			updateSites: function(showSuccessMessage) {

@@ -18,15 +18,17 @@ import com.liferay.contacts.service.EntryLocalServiceUtil;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
-
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Brian Wing Shun Chan
@@ -57,6 +59,87 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("entryId", getEntryId());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("fullName", getFullName());
+		attributes.put("emailAddress", getEmailAddress());
+		attributes.put("comments", getComments());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long entryId = (Long)attributes.get("entryId");
+
+		if (entryId != null) {
+			setEntryId(entryId);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		String fullName = (String)attributes.get("fullName");
+
+		if (fullName != null) {
+			setFullName(fullName);
+		}
+
+		String emailAddress = (String)attributes.get("emailAddress");
+
+		if (emailAddress != null) {
+			setEmailAddress(emailAddress);
+		}
+
+		String comments = (String)attributes.get("comments");
+
+		if (comments != null) {
+			setComments(comments);
+		}
 	}
 
 	public long getEntryId() {
@@ -147,6 +230,14 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 		_comments = comments;
 	}
 
+	public BaseModel<?> getEntryRemoteModel() {
+		return _entryRemoteModel;
+	}
+
+	public void setEntryRemoteModel(BaseModel<?> entryRemoteModel) {
+		_entryRemoteModel = entryRemoteModel;
+	}
+
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			EntryLocalServiceUtil.addEntry(this);
@@ -158,7 +249,7 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 
 	@Override
 	public Entry toEscapedModel() {
-		return (Entry)Proxy.newProxyInstance(Entry.class.getClassLoader(),
+		return (Entry)ProxyUtil.newProxyInstance(Entry.class.getClassLoader(),
 			new Class[] { Entry.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -316,4 +407,5 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 	private String _fullName;
 	private String _emailAddress;
 	private String _comments;
+	private BaseModel<?> _entryRemoteModel;
 }

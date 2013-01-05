@@ -66,7 +66,7 @@ public class KaleoTaskAssignmentLocalServiceImpl
 		kaleoTaskAssignment.setKaleoDefinitionId(kaleoDefinitionId);
 		setAssignee(kaleoTaskAssignment, assignment, serviceContext);
 
-		kaleoTaskAssignmentPersistence.update(kaleoTaskAssignment, false);
+		kaleoTaskAssignmentPersistence.update(kaleoTaskAssignment);
 
 		return kaleoTaskAssignment;
 	}
@@ -175,6 +175,8 @@ public class KaleoTaskAssignmentLocalServiceImpl
 
 			kaleoTaskAssignment.setAssigneeScriptLanguage(
 				scriptLanguage.getValue());
+			kaleoTaskAssignment.setAssigneeScriptRequiredContexts(
+				scriptAssignment.getScriptRequiredContexts());
 		}
 		else if (assignmentType.equals(AssignmentType.USER)) {
 			kaleoTaskAssignment.setAssigneeClassName(User.class.getName());

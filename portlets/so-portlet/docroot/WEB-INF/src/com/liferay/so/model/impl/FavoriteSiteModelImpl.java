@@ -34,6 +34,9 @@ import java.io.Serializable;
 
 import java.sql.Types;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The base model implementation for the FavoriteSite service. Represents a row in the &quot;SO_FavoriteSite&quot; database table, with each column mapped to a property of this class.
  *
@@ -63,6 +66,8 @@ public class FavoriteSiteModelImpl extends BaseModelImpl<FavoriteSite>
 		};
 	public static final String TABLE_SQL_CREATE = "create table SO_FavoriteSite (favoriteSiteId LONG not null primary key,groupId LONG,companyId LONG,userId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table SO_FavoriteSite";
+	public static final String ORDER_BY_JPQL = " ORDER BY favoriteSite.favoriteSiteId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY SO_FavoriteSite.favoriteSiteId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -77,6 +82,7 @@ public class FavoriteSiteModelImpl extends BaseModelImpl<FavoriteSite>
 			true);
 	public static long GROUPID_COLUMN_BITMASK = 1L;
 	public static long USERID_COLUMN_BITMASK = 2L;
+	public static long FAVORITESITEID_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.so.model.FavoriteSite"));
 
@@ -105,6 +111,45 @@ public class FavoriteSiteModelImpl extends BaseModelImpl<FavoriteSite>
 
 	public String getModelClassName() {
 		return FavoriteSite.class.getName();
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("favoriteSiteId", getFavoriteSiteId());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long favoriteSiteId = (Long)attributes.get("favoriteSiteId");
+
+		if (favoriteSiteId != null) {
+			setFavoriteSiteId(favoriteSiteId);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
 	}
 
 	public long getFavoriteSiteId() {
@@ -176,29 +221,26 @@ public class FavoriteSiteModelImpl extends BaseModelImpl<FavoriteSite>
 	}
 
 	@Override
-	public FavoriteSite toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (FavoriteSite)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					FavoriteSite.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			FavoriteSite.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public FavoriteSite toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (FavoriteSite)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -336,7 +378,7 @@ public class FavoriteSiteModelImpl extends BaseModelImpl<FavoriteSite>
 	}
 
 	private static ClassLoader _classLoader = FavoriteSite.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			FavoriteSite.class
 		};
 	private long _favoriteSiteId;
@@ -348,7 +390,6 @@ public class FavoriteSiteModelImpl extends BaseModelImpl<FavoriteSite>
 	private String _userUuid;
 	private long _originalUserId;
 	private boolean _setOriginalUserId;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private FavoriteSite _escapedModelProxy;
+	private FavoriteSite _escapedModel;
 }
