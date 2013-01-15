@@ -7,18 +7,9 @@
 	</compatibility>
 	<theme id="zoe-brochure" name="Zoe Brochure">
 		<settings>
-			<setting configurable="true" key="portlet-setup-show-borders-default" type="checkbox" value="false" />
-			<setting configurable="false" key="show-site-name-default" value="false" />
-			<setting configurable="false" key="show-site-name-supported" value="true" />
+			<setting configurable="true" key="portlet-setup-show-borders-default" type="checkbox" value="false"></setting>
+			<setting configurable="false" key="show-site-name-default" value="false"></setting>
+			<setting configurable="false" key="show-site-name-supported" value="true"></setting>
 		</settings>
-		<layout-templates>
-			<custom>
-				<layout-template id="2_1_2_columns" name="2-1-2 Columns Layout">
-					<template-path>/layouttpl/custom/2-1-2-columns-layouttpl/2_1_2_columns.tpl</template-path>
-					<wap-template-path>/layouttpl/custom/2-1-2-columns-layouttpl/2_1_2_columns.wap.tpl</wap-template-path>
-					<thumbnail-path>/layouttpl/custom/2-1-2-columns-layouttpl/2_1_2_columns.png</thumbnail-path>
-				</layout-template>
-			</custom>
-		</layout-templates>
 	</theme>
 </look-and-feel>

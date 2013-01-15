@@ -1,25 +1,92 @@
 <?xml version="1.0"?>
 
 <root available-locales="en_US" default-locale="en_US">
-	<dynamic-element instance-id="M4puwHg8" name="title" type="text" index-type="">
+	<dynamic-element name="title" type="text">
 		<dynamic-content><![CDATA[How do we do it?]]></dynamic-content>
+		<dynamic-element name="link" type="text">
+			<dynamic-content><![CDATA[]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element name="image" type="document_library">
+			<dynamic-content><![CDATA[[$FILE=gears_icon.png$]]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element name="description" type="text_box">
+			<dynamic-content><![CDATA[A walk through of our process to bring new reality to your world]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element name="content" type="text_area">
+			<dynamic-content><![CDATA[<p>
+	Nulla turpis erat, sagittis eget mattis sit amet, sagittis at leo.
+	Maecenas condimentum, mi nec iaculis faucibus, ligula libero malesuada massa, quis consequat leo sem et lorem.
+	Sed dignissim, augue bibendum convallis faucibus, sapien ante sollicitudin felis, ac tristique est sapien a enim.<br>
+	<br>
+	Nunc ut felis nibh.
+	Pellentesque cursus vulputate leo in tincidunt.
+	Nullam lacinia nibh et elit tristique volutpat.
+	Fusce vel arcu vitae velit fermentum blandit.<br>
+	<br>
+	Sed lobortis venenatis mauris, eu scelerisque lectus rutrum ac.
+	Proin dui magna, dapibus ac ultricies vel, condimentum sed magna.
+	Aenean eleifend molestie nunc a sagittis.
+	Duis leo tellus, consequat nec suscipit tempus, sagittis molestie erat.
+</p>]]></dynamic-content>
+		</dynamic-element>
 	</dynamic-element>
-	<dynamic-element instance-id="VP25Oqe7" name="link" type="text" index-type="">
-		<dynamic-content><![CDATA[]]></dynamic-content>
+	<dynamic-element name="title" type="text">
+		<dynamic-content><![CDATA[Our Achievements]]></dynamic-content>
+		<dynamic-element name="link" type="text">
+			<dynamic-content><![CDATA[]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element name="image" type="document_library">
+			<dynamic-content><![CDATA[[$FILE=trophy_icon.png$]]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element name="description" type="text_box">
+			<dynamic-content><![CDATA[Take a look at what we've done to provide you with the best there is.]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element name="content" type="text_area">
+			<dynamic-content><![CDATA[<p>
+	Aliquam consequat, purus vehicula tristique scelerisque, lorem neque rutrum erat, quis aliquet diam magna at ligula.
+	Etiam eget mi tortor, vel pretium lectus.
+	Morbi sit amet dui velit.
+	Cras odio nisl, blandit quis rhoncus eget, convallis nec tortor.
+	In quis tellus lorem.
+	Proin posuere ligula et nisi rhoncus eu mollis ligula varius.
+	Donec pharetra molestie felis non tincidunt.
+	Donec faucibus consectetur cursus.
+	Donec viverra dignissim tempus.<br>
+	<br>
+	Suspendisse dictum tellus sit amet sapien ullamcorper id facilisis nisi tempor.
+	Integer pulvinar lacus vitae sem scelerisque mollis.
+	Praesent at est eu magna mollis scelerisque sit amet sed lacus.
+</p>]]></dynamic-content>
+		</dynamic-element>
 	</dynamic-element>
-	<dynamic-element instance-id="6n0S7AjA" name="image" type="document_library" index-type="">
-		<dynamic-content><![CDATA[[$FILE=gears_icon.png$]]]></dynamic-content>
-	</dynamic-element>
-	<dynamic-element instance-id="jrO1zZ9V" name="description" type="text_box" index-type="">
-		<dynamic-content><![CDATA[A walk through of our process to bring new reality to your world]]></dynamic-content>
-	</dynamic-element>
-	<dynamic-element instance-id="Q9mUXJt6" name="content" type="text_area" index-type="">
-		<dynamic-content><![CDATA[<p>
-	Nulla turpis erat, sagittis eget mattis sit amet, sagittis at leo. Maecenas condimentum, mi nec iaculis faucibus, ligula libero malesuada massa, quis consequat leo sem et lorem. Sed dignissim, augue bibendum convallis faucibus, sapien ante sollicitudin felis, ac tristique est sapien a enim.<br />
-	<br />
-	Nunc ut felis nibh. Pellentesque cursus vulputate leo in tincidunt. Nullam lacinia nibh et elit tristique volutpat. Fusce vel arcu vitae velit fermentum blandit.<br />
-	<br />
-	Sed lobortis venenatis mauris, eu scelerisque lectus rutrum ac. Proin dui magna, dapibus ac ultricies vel, condimentum sed magna. Aenean eleifend molestie nunc a sagittis. Duis leo tellus, consequat nec suscipit tempus, sagittis molestie erat. &nbsp;&nbsp;</p>
-]]></dynamic-content>
+	<dynamic-element name="title" type="text">
+		<dynamic-content><![CDATA[OUR STRATEGY]]></dynamic-content>
+		<dynamic-element name="link" type="text">
+			<dynamic-content><![CDATA[]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element name="image" type="document_library">
+			<dynamic-content><![CDATA[[$FILE=strategy_icon.png$]]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element name="description" type="text_box">
+			<dynamic-content><![CDATA[How we achieve our goals and provide quality products]]></dynamic-content>
+		</dynamic-element>
+		<dynamic-element name="content" type="text_area">
+			<dynamic-content><![CDATA[<p>
+	Etiam porta condimentum vulputate.
+	Etiam in eros viverra mauris vehicula commodo vitae vehicula justo.
+	Vestibulum massa diam, iaculis ut posuere dapibus, blandit volutpat nibh.<br>
+	<br>
+	Neth vehicula, sapien tincidunt aliquet condimentum, nisi ante sodales ligula, ac bibendum risus tortor at lacus.
+	Aliquam sit amet purus felis.
+	Suspendisse velit justo, suscipit eget convallis eget, viverra at ligula.
+	Aliquam ut mollis orci.
+	Mauris condimentum viverra dui a dictum.
+	Donec adipiscing arcu non sapien hendrerit pellentesque.<br>
+	<br>
+	Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+	Suspendisse laoreet pharetra lorem sit amet volutpat.
+	Quisque felis nulla, rhoncus at blandit vitae, tempus a ante.
+</p>]]></dynamic-content>
+		</dynamic-element>
 	</dynamic-element>
 </root>

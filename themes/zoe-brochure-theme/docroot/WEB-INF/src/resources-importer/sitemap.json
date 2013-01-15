@@ -7,12 +7,6 @@
 				],
 				[
 					"How Do We Do It.xml"
-				],
-				[
-					"Our Strategy.xml"
-				],
-				[
-					"Our Achievements.xml"
 				]
 			],
 			"friendlyURL": "/home",
@@ -32,7 +26,7 @@
 				]
 			],
 			"friendlyURL": "/about",
-			"layoutTemplateId": "2_1_2_columns",
+			"layoutTemplateId": "zoe_brochure",
 			"name": "About",
 			"title": "About"
 		},
@@ -52,5 +46,5 @@
 			"title": "Contact"
 		}
 	],
-	"layoutTemplateId": "1_3_1_columns"
+	"layoutTemplateId": "zoe_brochure"
 }

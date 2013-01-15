@@ -17,8 +17,6 @@
 		<h1 class="innovation-title">
 			$title.data
 		</h1>
-
-		<div class="divider"></div>
 	#end
 
 	<div class="aui-layout-content content-text">

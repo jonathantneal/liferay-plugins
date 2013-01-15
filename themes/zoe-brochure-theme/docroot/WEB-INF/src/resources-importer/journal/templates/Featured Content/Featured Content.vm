@@ -1,25 +1,29 @@
-<div class="pod">
-	#if ($image.data != "")
-		<img class="pod-image" src="$image.data" />
+<div class="featured stack">
+	#foreach ($each in $title.getSiblings())
+		<section class="panel">
+			<header class="pod">
+				#if ($each.image.data != "")
+					<img class="pod-image" src="$each.image.data">
+				#end
+
+				#if ($each.data != "")
+					<h1>
+						$each.data
+					</h1>
+				#end
+
+				#if ($each.description.data != "")
+					<p>
+						$each.description.data
+					</p>
+				#end
+			</header>
+
+			#if ($each.content.data != "")
+				<div class="column-text">
+					$each.content.data
+				</div>
+			#end
+		</section>
 	#end
-
-	<div class="pod-text">
-		#if ($title.data != "")
-			<h5>
-				$title.data
-			</h5>
-		#end
-
-		#if ($description.data != "")
-			$description.data
-		#end
-	</div>
-
-	<div class="divider"></div>
 </div>
-
-#if ($content.data != "")
-	<div class="column-text">
-		$content.data
-	</div>
-#end

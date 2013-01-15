@@ -1,19 +1,23 @@
 #set ($content_id = $reserved-article-id.getData())
 #set ($content_class = "multiple-items-" + $content_id + "-carousel")
 
-<style type="text/css">
+<style>
 	#${content_class} {
-		height: ${height.getData()}px;
+		display: block;
+		height: 0;
+		padding-top: 27%;
 		position: relative;
-		width: ${width.getData()}px;
 	}
 
-	#${content_class} .carousel-item {
-		height: ${height.getData()}px;
-		overflow: hidden;
+	#${content_class} .aui-carousel, #${content_class} .carousel, #${content_class} .carousel-item, #${content_class} img {
+		height: 100%;
+		width: 100%;
+
+	}
+
+	#${content_class} .aui-carousel, #${content_class} .carousel, #${content_class} img {
 		position: absolute;
 		top: 0;
-		width: ${width.getData()}px;
 	}
 
 	#${content_class}.hide-controls menu {
@@ -28,21 +32,23 @@
 #end
 
 <div id="$content_class" class="$controls_class">
-	#foreach ($item in $image.getSiblings())
-		<div class="carousel-item">
-			#if ($item.getData())
-				#if ($item.link.url-location.data != "")
-					<a href="$item.link.url-location.getFriendlyUrl()">
-				#end
+	<div class="carousel">
+		#foreach ($item in $image.getSiblings())
+			<div class="carousel-item">
+				#if ($item.getData())
+					#if ($item.link.url-location.data != "")
+						<a href="$item.link.url-location.getFriendlyUrl()">
+					#end
 
-				<img alt="$item.link.data" src="$item.getData()" title="$item.link.data" />
+					<img alt="$item.link.data" src="$item.getData()" title="$item.link.data" />
 
-				#if ($item.link.url-location.data != "")
-					</a>
+					#if ($item.link.url-location.data != "")
+						</a>
+					#end
 				#end
-			#end
-		</div>
-	#end
+			</div>
+		#end
+	</div>
 </div>
 
 <script type="text/javascript">
@@ -52,10 +58,10 @@
 			new A.Carousel(
 				{
 					activeIndex: 'rand',
-					contentBox: '#${content_class}',
-					height: $height.getData(),
+					contentBox: '#${content_class} .carousel',
+					height: "100%",
 					intervalTime: $duration.getData(),
-					width: $width.getData()
+					width: "100%"
 				}
 			).render();
 		}

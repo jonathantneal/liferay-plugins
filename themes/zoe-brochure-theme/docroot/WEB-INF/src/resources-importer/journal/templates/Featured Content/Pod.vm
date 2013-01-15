@@ -1,27 +1,29 @@
-<div class="pod button">
-	#if ($link.data != "")
-		<a href="$link.data">
-	#end
-
-	#if ($image.data != "")
-		<img class="pod-image" src="$image.data" />
-	#end
-
-	<div class="pod-text">
-		#if ($title.data != "")
-			<h5>
-				$title.data
-			</h5>
+#foreach ($each in $title.getSiblings())
+	<div class="pod button">
+		#if ($each.link.data != "")
+			<a href="$each.link.data">
 		#end
 
-		#if ($description.data != "")
-			<span class="description">
-				$description.data
-			</span>
+		#if ($each.image.data != "")
+			<img class="pod-image" src="$each.image.data" />
+		#end
+
+		<div class="pod-text">
+			#if ($each.data != "")
+				<h5>
+					$each.data
+				</h5>
+			#end
+
+			#if ($each.description.data != "")
+				<span class="description">
+					$each.description.data
+				</span>
+			#end
+		</div>
+
+		#if ($each.link.data != "")
+			</a>
 		#end
 	</div>
-
-	#if ($link.data != "")
-		</a>
-	#end
-</div>
+#end

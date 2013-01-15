@@ -1,13 +1,15 @@
-<div class="featured-text">
-	#if ($title.data != "")
-		<h3>
-			$title.data
-		</h3>
-	#end
+#foreach ($each in $title.getSiblings())
+	<div class="featured-text">
+		#if ($each.data != "")
+			<h3>
+				$each.data
+			</h3>
+		#end
 
-	#if ($content.data != "")
-		<div class="featured-content">
-			$content.data
-		</div>
-	#end
-</div>
+		#if ($each.content.data != "")
+			<div class="featured-content">
+				$each.content.data
+			</div>
+		#end
+	</div>
+#end

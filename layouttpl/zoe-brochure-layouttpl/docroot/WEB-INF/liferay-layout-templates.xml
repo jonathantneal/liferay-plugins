@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE layout-templates PUBLIC "-//Liferay//DTD Layout Templates 6.2.0//EN" "http://www.liferay.com/dtd/liferay-layout-templates_6_2_0.dtd">
+
+<layout-templates>
+	<custom>
+		<layout-template id="zoe_brochure" name="Zoe Brochure">
+			<template-path>/zoe_brochure.tpl</template-path>
+			<wap-template-path>/zoe_brochure.wap.tpl</wap-template-path>
+			<thumbnail-path>/zoe_brochure.png</thumbnail-path>
+		</layout-template>
+	</custom>
+</layout-templates>

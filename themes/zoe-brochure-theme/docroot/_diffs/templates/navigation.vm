@@ -1,37 +1,31 @@
-<nav class="$nav_css_class" id="navigation">
-	<h1>
-		<span>#language ("navigation")</span>
+#set ($siteHref = $portletURLFactory.create($request, "49", $layout.getPlid(), "ACTION_PHASE"))
+#set ($siteName = $layout.getGroup().getDescriptiveName())
+#set ($siteLogo = $themeDisplay.getCompanyLogo())
+#set ($siteLogoWidth = $themeDisplay.getCompanyLogoWidth())
+#set ($siteLogoHeight = $themeDisplay.getCompanyLogoHeight())
+
+#if (!$themeDisplay.signedIn)
+	<a href="$themeDisplay.URLSignIn" class="sign-in" rel="nofollow">$languageUtil.get($locale, "sign-in")</a>
+#end
+
+<header class="site-header" role="banner">
+	<h1 class="site-title">
+		<a href="$siteHref" class="logo"><img alt="$siteName" src="$siteLogo"></a>
 	</h1>
 
-	#if ($is_mobile && $is_mobile_enabled)
-		<a id="nav-menu-button">#language ("menu")</a>
-	#end
-
-	<div class="nav-content">
+	<nav class="site-navigation">
 		<ul>
-			#foreach ($nav_item in $nav_items)
-				#if ($nav_item.isSelected())
-					<li aria-selected="true" class="selected">
-				#else
-					<li>
-				#end
-					<a href="$nav_item.getURL()" $nav_item.getTarget()><span>$nav_item.icon() $nav_item.getName()</span></a>
+			#foreach ($navItem in $navItems)
+				#set ($navItemClass = "")
 
-					#if ($nav_item.hasChildren())
-						<ul class="child-menu">
-							#foreach ($nav_child in $nav_item.getChildren())
-								#if ($nav_child.isSelected())
-									<li aria-selected="true" class="selected">
-								#else
-									<li>
-								#end
-									<a href="$nav_child.getURL()" $nav_child.getTarget()>$nav_child.getName()</a>
-								</li>
-							#end
-						</ul>
-					#end
+				#if ($navItem.layout == $layout)
+					#set ($navItemClass = "selected")
+				#end
+
+				<li>
+					<a href="$navItem.URL" class="$navItemClass">$navItem.name</a>
 				</li>
 			#end
 		</ul>
-	</div>
-</nav>
+	</nav>
+</header>
