@@ -1340,6 +1340,61 @@
 </p>
 
 <liferay-ui:header
+	title="Search Container"
+/>
+
+<p>
+
+	<%
+	List<Foo> foos = new ArrayList<Foo>();
+
+	foos.add(new FooImpl(1, "Class Loader"));
+	foos.add(new FooImpl(2, "Reflection"));
+	%>
+
+	<liferay-util:buffer var="searchContainerHTML">
+		<liferay-ui:search-container
+			headerNames="Check,Result"
+		>
+			<liferay-ui:search-container-results
+				results="<%= foos %>"
+				total="1"
+			/>
+
+			<liferay-ui:search-container-row
+				className="com.liferay.testpacl.model.Foo"
+				keyProperty="fooId"
+				modelVar="foo"
+			>
+
+				<liferay-ui:search-container-column-text
+					name="Check"
+					value="<%= foo.getField1() %>"
+				/>
+
+				<liferay-ui:search-container-column-text
+					name="Result"
+					value="PASSED"
+				/>
+
+			</liferay-ui:search-container-row>
+
+			<liferay-ui:search-iterator />
+		</liferay-ui:search-container>
+	</liferay-util:buffer>
+
+	<%
+	if (searchContainerHTML.replaceAll("\\s*", "").isEmpty()) {
+		out.write("FAILED");
+	}
+	else {
+		out.write(searchContainerHTML);
+	}
+	%>
+
+</p>
+
+<liferay-ui:header
 	title="Search Engine"
 />
 

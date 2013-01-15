@@ -205,11 +205,11 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 
 		// Calendar
 
-		Calendar calendar = calendarPersistence.findByPrimaryKey(calendarId);
-
 		if (color <= 0) {
 			color = PortletPropsValues.CALENDAR_COLOR_DEFAULT;
 		}
+
+		Calendar calendar = calendarPersistence.findByPrimaryKey(calendarId);
 
 		validate(nameMap);
 
@@ -220,10 +220,6 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 		calendar.setDefaultCalendar(defaultCalendar);
 
 		calendarPersistence.update(calendar);
-
-		// Resources
-
-		resourceLocalService.updateModelResources(calendar, serviceContext);
 
 		// Calendar
 
@@ -249,11 +245,18 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 			long calendarId, int color, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
+		if (color <= 0) {
+			color = PortletPropsValues.CALENDAR_COLOR_DEFAULT;
+		}
+
 		Calendar calendar = calendarPersistence.findByPrimaryKey(calendarId);
 
-		return updateCalendar(
-			calendarId, calendar.getNameMap(), calendar.getDescriptionMap(),
-			color, calendar.isDefaultCalendar(), serviceContext);
+		calendar.setModifiedDate(serviceContext.getModifiedDate(null));
+		calendar.setColor(color);
+
+		calendarPersistence.update(calendar);
+
+		return calendar;
 	}
 
 	protected void updateDefaultCalendar(Calendar calendar)

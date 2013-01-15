@@ -19,7 +19,6 @@ import com.liferay.chat.model.Status;
 import com.liferay.chat.model.impl.StatusImpl;
 import com.liferay.chat.model.impl.StatusModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -1763,7 +1762,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 			StatusImpl.class, status.getPrimaryKey(), status);
 
 		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_USERID,
-			new Object[] { Long.valueOf(status.getUserId()) }, status);
+			new Object[] { status.getUserId() }, status);
 
 		status.resetOriginalValues();
 	}
@@ -1837,9 +1836,44 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 		}
 	}
 
+	protected void cacheUniqueFindersCache(Status status) {
+		if (status.isNew()) {
+			Object[] args = new Object[] { status.getUserId() };
+
+			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_USERID, args,
+				Long.valueOf(1));
+			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_USERID, args, status);
+		}
+		else {
+			StatusModelImpl statusModelImpl = (StatusModelImpl)status;
+
+			if ((statusModelImpl.getColumnBitmask() &
+					FINDER_PATH_FETCH_BY_USERID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] { status.getUserId() };
+
+				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_USERID, args,
+					Long.valueOf(1));
+				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_USERID, args,
+					status);
+			}
+		}
+	}
+
 	protected void clearUniqueFindersCache(Status status) {
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_USERID,
-			new Object[] { Long.valueOf(status.getUserId()) });
+		StatusModelImpl statusModelImpl = (StatusModelImpl)status;
+
+		Object[] args = new Object[] { status.getUserId() };
+
+		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
+		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_USERID, args);
+
+		if ((statusModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_USERID.getColumnBitmask()) != 0) {
+			args = new Object[] { statusModelImpl.getOriginalUserId() };
+
+			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
+			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_USERID, args);
+		}
 	}
 
 	/**
@@ -1867,7 +1901,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 */
 	public Status remove(long statusId)
 		throws NoSuchStatusException, SystemException {
-		return remove(Long.valueOf(statusId));
+		return remove((Serializable)statusId);
 	}
 
 	/**
@@ -1982,7 +2016,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 			if ((statusModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_MODIFIEDDATE.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(statusModelImpl.getOriginalModifiedDate())
+						statusModelImpl.getOriginalModifiedDate()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_MODIFIEDDATE,
@@ -1990,9 +2024,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_MODIFIEDDATE,
 					args);
 
-				args = new Object[] {
-						Long.valueOf(statusModelImpl.getModifiedDate())
-					};
+				args = new Object[] { statusModelImpl.getModifiedDate() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_MODIFIEDDATE,
 					args);
@@ -2002,15 +2034,13 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 
 			if ((statusModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ONLINE.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Boolean.valueOf(statusModelImpl.getOriginalOnline())
-					};
+				Object[] args = new Object[] { statusModelImpl.getOriginalOnline() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_ONLINE, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ONLINE,
 					args);
 
-				args = new Object[] { Boolean.valueOf(statusModelImpl.getOnline()) };
+				args = new Object[] { statusModelImpl.getOnline() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_ONLINE, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ONLINE,
@@ -2020,8 +2050,8 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 			if ((statusModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_O.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(statusModelImpl.getOriginalModifiedDate()),
-						Boolean.valueOf(statusModelImpl.getOriginalOnline())
+						statusModelImpl.getOriginalModifiedDate(),
+						statusModelImpl.getOriginalOnline()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_M_O, args);
@@ -2029,8 +2059,8 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 					args);
 
 				args = new Object[] {
-						Long.valueOf(statusModelImpl.getModifiedDate()),
-						Boolean.valueOf(statusModelImpl.getOnline())
+						statusModelImpl.getModifiedDate(),
+						statusModelImpl.getOnline()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_M_O, args);
@@ -2042,25 +2072,8 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 		EntityCacheUtil.putResult(StatusModelImpl.ENTITY_CACHE_ENABLED,
 			StatusImpl.class, status.getPrimaryKey(), status);
 
-		if (isNew) {
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_USERID,
-				new Object[] { Long.valueOf(status.getUserId()) }, status);
-		}
-		else {
-			if ((statusModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_USERID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(statusModelImpl.getOriginalUserId())
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
-
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_USERID, args);
-
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_USERID,
-					new Object[] { Long.valueOf(status.getUserId()) }, status);
-			}
-		}
+		clearUniqueFindersCache(status);
+		cacheUniqueFindersCache(status);
 
 		return status;
 	}
@@ -2092,13 +2105,24 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 *
 	 * @param primaryKey the primary key of the status
 	 * @return the status
-	 * @throws com.liferay.portal.NoSuchModelException if a status with the primary key could not be found
+	 * @throws com.liferay.chat.NoSuchStatusException if a status with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Status findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchStatusException, SystemException {
+		Status status = fetchByPrimaryKey(primaryKey);
+
+		if (status == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchStatusException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return status;
 	}
 
 	/**
@@ -2111,18 +2135,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 */
 	public Status findByPrimaryKey(long statusId)
 		throws NoSuchStatusException, SystemException {
-		Status status = fetchByPrimaryKey(statusId);
-
-		if (status == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + statusId);
-			}
-
-			throw new NoSuchStatusException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				statusId);
-		}
-
-		return status;
+		return findByPrimaryKey((Serializable)statusId);
 	}
 
 	/**
@@ -2135,19 +2148,8 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	@Override
 	public Status fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the status with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param statusId the primary key of the status
-	 * @return the status, or <code>null</code> if a status with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Status fetchByPrimaryKey(long statusId) throws SystemException {
 		Status status = (Status)EntityCacheUtil.getResult(StatusModelImpl.ENTITY_CACHE_ENABLED,
-				StatusImpl.class, statusId);
+				StatusImpl.class, primaryKey);
 
 		if (status == _nullStatus) {
 			return null;
@@ -2159,20 +2161,19 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 			try {
 				session = openSession();
 
-				status = (Status)session.get(StatusImpl.class,
-						Long.valueOf(statusId));
+				status = (Status)session.get(StatusImpl.class, primaryKey);
 
 				if (status != null) {
 					cacheResult(status);
 				}
 				else {
 					EntityCacheUtil.putResult(StatusModelImpl.ENTITY_CACHE_ENABLED,
-						StatusImpl.class, statusId, _nullStatus);
+						StatusImpl.class, primaryKey, _nullStatus);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(StatusModelImpl.ENTITY_CACHE_ENABLED,
-					StatusImpl.class, statusId);
+					StatusImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -2182,6 +2183,17 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 		}
 
 		return status;
+	}
+
+	/**
+	 * Returns the status with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param statusId the primary key of the status
+	 * @return the status, or <code>null</code> if a status with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	public Status fetchByPrimaryKey(long statusId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)statusId);
 	}
 
 	/**
