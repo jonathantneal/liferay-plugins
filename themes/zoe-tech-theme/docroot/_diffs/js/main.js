@@ -1,30 +1,27 @@
 AUI().ready(
-	'aui-base',
 	'aui-io',
 	'event-move',
 	'node-base',
 	'node-event-delegate',
 	'transition',
+	/*
+	This function gets loaded when all the HTML, not including the portlets, is
+	loaded.
+	*/
+
 	function (A) {
-		var keywords = A.all('#keywords');
-
-		if (keywords) {
-			keywords.attr('title', 'Press Enter to Search');
-		}
-
 		var body = A.one('body');
-		var html = A.one('html');
 		var navigation = A.one('#navigation')
 		var toggle = A.one('#toggle');
 
-		if (html.hasClass('mobile')) {
+		if (body.hasClass('mobile')) {
 			navigation.removeClass('sort-pages modify-pages');
 
 			if(toggle) {
 				toggle.on(
 					'click',
 					function (e) {
-						body.toggleClass('show-nav');
+						body.toggleClass('show-nav');			
 					}
 				);
 			};
@@ -42,12 +39,12 @@ AUI().ready(
 							}
 						}
 					);
-					window.location.reload(true);
+					window.location.reload(true);		
 				}
 			);
 
 			body.on(
-				"gesturemovestart",
+				"gesturemovestart", 
 				function (e) {
 					var item = e.currentTarget;
 					var MIN_SWIPE = 20;
@@ -70,7 +67,7 @@ AUI().ready(
 								body.toggleClass('show-nav');
 							}
 						}
-					)
+					)					
 				}
 			)
 		}
@@ -92,6 +89,7 @@ Liferay.Portlet.ready(
 
 Liferay.on(
 	'allPortletsReady',
+
 	/*
 	This function gets loaded when everything, including the portlets, is on
 	the page.
